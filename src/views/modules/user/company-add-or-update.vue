@@ -64,7 +64,7 @@
           realname: '',
           province: '',
           city:'',
-          trade: '',
+          trade: [],
           positiotn: '',
         },
         tradeList: [],
