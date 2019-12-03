@@ -2,7 +2,7 @@
   <div class="mod-policy-pack">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button type="warning" @click="$router.push({ name: 'policy-pack-add-or-update' })" >新增</el-button>
+        <el-button type="warning" v-if="isAuth('biz:policypack:save')"  @click="$router.push({ name: 'policy-pack-add-or-update' })" >新增</el-button>
       </el-form-item>
       <el-form-item>
         <el-select
@@ -33,7 +33,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getDataList()">搜索</el-button>
-        <!--<el-button type="info" @click="" >重置</el-button>-->
+        <el-button type="info" @click="resetForm()" >重置</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -84,9 +84,9 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" v-if="scope.row.status==1" size="small" @click="updateStatus(scope.row.id)">更新完成</el-button>
-          <el-button v-if="scope.row.status==0" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-          <el-button type="text" size="small" @click="$router.push({ name: 'policy-pack-add-or-update',query:{id:scope.row.id} })">编辑</el-button>
-          <el-button type="text" size="small" @click="$router.push({ name: 'policy-pack-view',query:{id:scope.row.id} })">查看</el-button>
+          <el-button v-if="isAuth('biz:policypack:delete')" v-show="scope.row.status==0" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="isAuth('biz:policypack:update')" type="text" size="small" @click="$router.push({ name: 'policy-pack-add-or-update',query:{id:scope.row.id} })">编辑</el-button>
+          <el-button v-if="isAuth('biz:policypack:info')" type="text" size="small" @click="$router.push({ name: 'policy-pack-view',query:{id:scope.row.id} })">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -126,6 +126,14 @@
       this.getDataList()
     },
     methods: {
+      //重置搜索条件
+      resetForm(){
+        this.dataForm= {
+          policyDate:'',
+            status:'',
+            title:''
+        }
+      },
       //获取搜索栏下拉列表
       getTopSelect(){
         //对应月份

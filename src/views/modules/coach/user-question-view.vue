@@ -2,42 +2,49 @@
   <div class="mod-policy">
     <h2 style="border-bottom: 1px solid #ccc;padding-bottom: 20px;margin-bottom: 50px">查看</h2>
     <el-form label-position="right" label-width="100px" :model="dataForm" ref="dataForm">
+      <el-form-item label="用户信息">
+        <div style="border: 1px solid #eee;padding: 5px 0;margin-bottom: 10px ;margin-top: 10px">
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="手机号码"><el-input style="width:220px;" :disabled="true" v-model="dataForm.phone"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="真实姓名"><el-input style="width:220px;" :disabled="true" v-model="dataForm.realName"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="企业名称"><el-input style="width:220px;" :disabled="true" v-model="dataForm.companyName"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="企业ID"><el-input style="width:220px;" :disabled="true" v-model="dataForm.companyId"></el-input></el-form-item>
+        </div>
+      </el-form-item>
       <el-form-item label="试题ID">
         <el-input type="text" v-model="dataForm.id" style="width: 500px" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="关联政策">
-        <div style="background: #eee;padding: 5px 0;margin-bottom: 10px ;margin-top: 10px">
+        <div style="border: 1px solid #eee;padding: 5px 0;margin-bottom: 10px ;margin-top: 10px">
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策ID"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policyId"></el-input></el-form-item>
-          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策标题"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policy.title"></el-input></el-form-item>
-          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="文件号"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policy.fileNum"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策标题"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policyTitle"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="文件号"><el-input style="width:220px;" :disabled="true" v-model="dataForm.fileNum"></el-input></el-form-item>
         </div>
       </el-form-item>
-      <el-form-item label="题型" prop="type" :rules="{required: true, message: '题型不能为空', trigger: 'blur'}">
-        <el-radio-group v-model="dataForm.type"  @change="showModel(dataForm.type)" >
+      <el-form-item label="题型" >
+        <el-radio-group v-model="dataForm.questionType" >
           <el-radio :label="1" :disabled="true">单选题</el-radio>
           <el-radio :label="2" :disabled="true">多选题</el-radio>
           <el-radio :label="3" :disabled="true">判断题</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="题干" prop="title" :rules="{required: true, message: '题干不能为空', trigger: 'blur'}">
-        <el-input type="textarea" v-model="dataForm.title" :disabled="true" style="width: 500px"></el-input>
+      <el-form-item label="题干" >
+        <el-input type="textarea" v-model="dataForm.questionTitle" :disabled="true" style="width: 500px"></el-input>
       </el-form-item>
       <el-form-item label="选项">
-        <div v-for="(answerList,index) in dataForm.answerList" >
-          <el-form-item :prop="'answerList.' + index + '.content'"  :label="getStringNum(parseInt(index+1))" :rules="{required: true, message: '选项不能为空', trigger: 'blur'}">
-            <el-input type="textarea" :disabled="true" v-model="dataForm.answerList[index].content" style="width: 500px"></el-input>
+        <div v-for="(quAnswers,index) in dataForm.quAnswers" >
+          <el-form-item  :label="getStringNum(parseInt(index+1))">
+            <el-input type="textarea" :disabled="true" v-model="dataForm.quAnswers[index].content" style="width: 500px"></el-input>
           </el-form-item>
-          <el-form-item label=" " :prop="'answerList.' + index + '.status'" :rules="{required: true, message: '请选择正确答案', trigger: 'blur'}" style="margin-top: 20px;margin-bottom: 20px">
-            <el-radio-group v-if="dataForm.type==1|| dataForm.type==3" v-model="dataForm.answerList[index].status"><el-radio :label="1" :disabled="true" @change="getStatus(index)">正确答案</el-radio></el-radio-group>
-            <el-radio-group v-if="dataForm.type==2" v-model="dataForm.answerList[index].status"><el-radio :label="1" :disabled="true">正确答案</el-radio></el-radio-group>
+          <el-form-item label=" "style="margin-top: 20px;margin-bottom: 20px">
+            <el-radio-group v-model="dataForm.quAnswers[index].status"><el-radio :label="1" :disabled="true" @change="getStatus(index)">正确答案</el-radio></el-radio-group>
           </el-form-item>
         </div>
       </el-form-item>
-      <el-form-item label="排序" prop="sort" :rules="{required: true, message: '排序不能为空', trigger: 'blur'}">
-        <el-input type="number" :disabled="true" v-model="dataForm.sort" style="width: 500px"></el-input>
+      <el-form-item label="结果">
+        <el-input type="text" :disabled="true" v-model="dataForm.rigwronStatusName" style="width: 500px"></el-input>
       </el-form-item>
-      <el-form-item label="创建时间" prop="sort">
-        <el-input type="text" :disabled="true" v-model="dataForm.createDate" style="width: 500px"></el-input>
+      <el-form-item label="提交时间">
+        <el-input type="text" :disabled="true" v-model="dataForm.updateDate" style="width: 500px"></el-input>
       </el-form-item>
       <el-form-item style="text-align: center;margin-top: 50px">
         <el-button type="info" @click="closePage()">关闭</el-button>
@@ -61,16 +68,21 @@
           token: this.$cookie.get('token')
         },
         dataForm:{
-          policy:{
-            title:'',
-            fileNum:'',
-          },
-          id:this.$route.query.qid || undefined,
-          policyId:this.$route.query.id,
+          phone:'',
+          realName:'',
+          companyId:'',
+          companyName:'',
+          questionType:'',
+          questionTitle:'',
+          rigwronStatusName:'',
+          updateDate:'',
+          fileNum:'',
+          policyId:'',
+          policyTitle:'',
+          id:this.$route.query.id || undefined,
           type:'',
           sort: '',
-          answerList: [],
-          createDate:''
+          quAnswers: [],
         },
 
       }
@@ -78,19 +90,25 @@
     mounted(){
       if(this.dataForm.id!=undefined){
         this.$http({
-          url: this.$http.adornUrl(`/biz/policyquestion/info/${this.dataForm.id}`),
+          url: this.$http.adornUrl(`/biz/userqu/info/${this.dataForm.id}`),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
           this.disabledS=true
-          this.dataForm.title=data.data.title
-          this.dataForm.type=parseInt(data.data.type)
-          this.dataForm.sort=data.data.sort
-          this.policySearch(data.data.policyId)
-          this.dataForm.createDate=this.commonDate.formatTime('','',data.data.createDate)
-          this.dataForm.answerList=data.data.answerList
-          for(var i=0;i<this.dataForm.answerList.length;i++){
-            this.dataForm.answerList[i].status=parseInt(this.dataForm.answerList[i].status)
+          this.dataForm.policyTitle=data.data.policyTitle
+          this.dataForm.phone=data.data.phone
+          this.dataForm.realName=data.data.realName
+          this.dataForm.companyName=data.data.companyName
+          this.dataForm.companyId=data.data.companyId
+          this.dataForm.questionType=parseInt(data.data.questionType)
+          this.dataForm.rigwronStatusName=data.data.rigwronStatusName
+          this.dataForm.fileNum=data.data.fileNum
+          this.dataForm.policyId=data.data.policyId
+          this.dataForm.questionTitle=data.data.questionTitle
+          this.dataForm.updateDate=this.commonDate.formatTime('','',data.data.updateDate)
+          this.dataForm.quAnswers=data.data.quAnswers
+          for(var i=0;i<this.dataForm.quAnswers.length;i++){
+            this.dataForm.quAnswers[i].status=parseInt(this.dataForm.quAnswers[i].status)
           }
         })
       }
@@ -122,20 +140,6 @@
           this.dataForm.answerList.push(
             {content:'',status:'2'},
             {content:'',status:'2'})
-        }
-      },
-      policySearch(val){
-        if(val!=""){
-
-          this.$http({
-            url: this.$http.adornUrl(`/biz/policy/info/${val}`),
-            method: 'get',
-            params: this.$http.adornParams()
-          }).then(({data}) => {
-            this.dataForm.policy.fileNum=data.data.fileNum
-            this.dataForm.policy.title=data.data.title
-            this.dataForm.policyId=data.data.id
-          })
         }
       },
       //添加Part

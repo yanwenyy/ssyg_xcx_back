@@ -24,9 +24,9 @@
             <span slot="title">ueditor</span>
           </el-menu-item>
         </el-submenu>-->
-        <el-submenu index="neirongweihu">
+        <!--<el-submenu index="neirongweihu">
           <template slot="title">
-            <span>内容维护</span>
+            <span>辅导内容维护</span>
           </template>
           <el-menu-item index="policy-pack" @click="$router.push({ name: 'policy-pack' })">
             <span slot="title">月政策包管理</span>
@@ -34,18 +34,34 @@
           <el-menu-item index="policy" @click="$router.push({ name: 'policy' })">
             <span slot="title">政策管理</span>
           </el-menu-item>
-        </el-submenu>
-        <!--<el-submenu index="company-user">-->
-          <!--<template slot="title">-->
-            <!--<span>企业/用户管理</span>-->
-          <!--</template>-->
-          <!--<el-menu-item index="user" @click="$router.push({ name: 'user' })">-->
-            <!--<span slot="title">普通用户管理</span>-->
-          <!--</el-menu-item>-->
-          <!--<el-menu-item index="company" @click="$router.push({ name: 'company' })">-->
-            <!--<span slot="title">企业用户管理</span>-->
-          <!--</el-menu-item>-->
-        <!--</el-submenu>-->
+          <el-menu-item index="question" @click="$router.push({ name: 'question' })">
+            <span slot="title">试题管理</span>
+          </el-menu-item>
+        </el-submenu>-->
+        <!--<el-submenu index="fudao">
+          <template slot="title">
+            <span>辅导管理</span>
+          </template>
+          <el-menu-item index="user-question" @click="$router.push({ name: 'user-question' })">
+          <span slot="title">用户测评结果</span>
+        </el-menu-item>
+          <el-menu-item index="user-report-res" @click="$router.push({ name: 'user-report-res' })">
+            <span slot="title">用户报告结果</span>
+          </el-menu-item>
+          </el-menu-item>
+        </el-submenu>-->
+        <!--<el-submenu index="jiaoyi">
+          <template slot="title">
+            <span>交易流水</span>
+          </template>
+          <el-menu-item index="member-order" @click="$router.push({ name: 'member-order' })">
+            <span slot="title">会员订单</span>
+          </el-menu-item>
+          <el-menu-item index="exam-order" @click="$router.push({ name: 'exam-order' })">
+            <span slot="title">补考订单</span>
+          </el-menu-item>
+          </el-menu-item>
+        </el-submenu>-->
         <sub-menu
           v-for="menu in menuList"
           :key="menu.menuId"

@@ -182,7 +182,7 @@
       })
       //属性
       this.$http({
-        url: this.$http.adornUrl('biz/policyattribute/select'),
+        url: this.$http.adornUrl('/biz/policyattribute/select'),
         method: 'get',
         params: this.$http.adornParams()
       }).then(({data}) => {

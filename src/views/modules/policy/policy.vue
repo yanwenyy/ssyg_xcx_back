@@ -10,7 +10,7 @@
           <el-button type="text" size="small" @click="$router.push({ name: 'policy-original-text-add-or-update'})">政策</el-button>
           <el-button type="text" size="small" @click="$router.push({ name: 'policy-article-add-or-update' })">文章</el-button>
         </el-popover>
-        <el-button type="warning" v-popover:popover1 >新增</el-button>
+        <el-button type="warning" v-if="isAuth('biz:policy:save')" v-popover:popover1 >新增</el-button>
       </el-form-item>
       <el-form-item>
         <el-select
@@ -83,6 +83,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getDataList()">搜索</el-button>
+        <el-button type="info" @click="resetForm()" >重置</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -187,13 +188,13 @@
             trigger="click">
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-original-view',query:{id:scope.row.id} })">原文</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-unscramble-view',query:{id:scope.row.id} })">解读</el-button>
-            <el-button type="text" size="small" @click="$router.push({ name: 'policy-evaluation-view',query:{id:scope.row.id} })">测评</el-button>
+            <el-button type="text" size="small" @click="$router.push({ name: 'policy-evaluation',query:{id:scope.row.id} })">测评</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-report-expert-view',query:{id:scope.row.id} })">报告</el-button>
           </el-popover>
-          <el-button v-if="scope.row.type==1" type="text" v-popover:popover2 size="small">编辑</el-button>
-          <el-button v-if="scope.row.type==1" type="text" size="small" v-popover:popover3 >查看</el-button>
-          <el-button v-if="scope.row.type==2" type="text" size="small" @click="$router.push({ name: 'policy-article-add-or-update',query:{id:scope.row.id} })">编辑</el-button>
-          <el-button v-if="scope.row.type==2" type="text" size="small" @click="$router.push({ name: 'policy-article-view',query:{id:scope.row.id} })">查看</el-button>
+          <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:update')" type="text" v-popover:popover2 size="small">编辑</el-button>
+          <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:info')" type="text" size="small" v-popover:popover3 >查看</el-button>
+          <el-button v-show="scope.row.type==2" v-if="isAuth('biz:policy:update')" type="text" size="small" @click="$router.push({ name: 'policy-article-add-or-update',query:{id:scope.row.id} })">编辑</el-button>
+          <el-button v-show="scope.row.type==2" v-if="isAuth('biz:policy:info')" type="text" size="small" @click="$router.push({ name: 'policy-article-view',query:{id:scope.row.id} })">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -220,14 +221,14 @@
           delFlag:'',
           title: '',
           id:'',
-          policyDate:'',
+          policyPackDate:'',
           fileNum:''
         },
         typeList:[{label:'政策',value:1},{label:'文章',value:2}],
         styleList:[],
         pubMinList:[{label:'普适型',value:1},{label:'小众型',value:2}],
         monthList:[],
-        delFlagList:[{label:'显示',value:0},{label:'隐藏',value:1}],
+        delFlagList:[{label:'显示',value:0},{label:'在线',value:1}],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -266,6 +267,19 @@
       })
     },
     methods: {
+      //重置搜索条件
+      resetForm(){
+        this.dataForm={
+          type:'',
+            style:'',
+            pubMin:'',
+            delFlag:'',
+            title: '',
+            id:'',
+            policyPackDate:'',
+            fileNum:''
+        }
+      },
       // 隐藏按钮
       showdelFlag (id,policyPackDate,type) {
         var ids = id ? [id] : this.dataListSelections.map(item => {
@@ -317,10 +331,10 @@
             'type':this.dataForm.type|| undefined,
             'style':this.dataForm.style|| undefined,
             'pubMin':this.dataForm.pubMin|| undefined,
-            'delFlag':this.dataForm.delFlag|| undefined,
+            'delFlag':String(this.dataForm.delFlag) || undefined,
             'title':this.dataForm.title|| undefined,
             'id':this.dataForm.id|| undefined,
-            'policyDate':this.dataForm.policyDate|| undefined,
+            'policyPackDate':this.dataForm.policyPackDate|| undefined,
             'fileNum':this.dataForm.fileNum|| undefined
           })
         }).then(({data}) => {

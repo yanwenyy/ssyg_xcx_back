@@ -72,6 +72,8 @@
                 this.imageUrl="http://"+data.data.icon
               }
             })
+          }else{
+            this.imageUrl=''
           }
         })
       },
