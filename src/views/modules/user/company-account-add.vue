@@ -7,10 +7,10 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="dataForm.phone" :disabled="true" placeholder="手机号"></el-input>
       </el-form-item>
-      <el-form-item label="用户名" prop="username">
+      <el-form-item label="用户名">
         <el-input v-model="dataForm.username" placeholder="用户名"></el-input>
       </el-form-item>
-      <el-form-item label="真实姓名" >
+      <el-form-item label="真实姓名" prop="realname" >
         <el-input v-model="dataForm.realname" placeholder="真实姓名"></el-input>
       </el-form-item>
       <el-form-item label="地区">
@@ -70,8 +70,8 @@
           phone: [
             { phone: true, message: '手机号不能为空', trigger: 'blur' }
           ],
-          username: [
-            { username: true, message: '用户名不能为空', trigger: 'blur' }
+          realname: [
+            { realname: true, message: '真实姓名不能为空', trigger: 'blur' }
           ]
         }
       }

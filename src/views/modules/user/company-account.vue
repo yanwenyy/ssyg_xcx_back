@@ -330,9 +330,9 @@
                     if(datas.companyid){//企业用户
                       this.$confirm(`
                            <div>手机号码“${value}”已经是企业用户</div>
-                           <div>真实姓名： ${datas.realname}</div>
+                           <div>真实姓名： ${datas.realname||"未填写"}</div>
                            <div>企业名称： ${datas.companyname}</div>
-                           <div>会员状态：  ${datas.vipStatus}</div>
+                           <div>会员状态：  ${datas.vipStatus||"未填写"}</div>
                            <div>会员状态：  ${datas.role==0?'管理层':'员工层'}</div>
                         `, '提示', {
                         confirmButtonText: '解绑并添加至当前企业',
@@ -341,7 +341,7 @@
                         if(datas.companyid==this.id){//已经是该企业用户
                           this.$alert(`
                            <div>手机号码“${value}”已在当前企业，不可重复添加</div>
-                           <div>真实姓名： ${datas.realname}</div>
+                           <div>真实姓名： ${datas.realname||"未填写"}</div>
                            <div>企业名称： ${datas.companyname}</div>
                            <div>会员状态：  ${datas.role==0?'管理层':'员工层'}</div>
                         `,  {
@@ -351,7 +351,7 @@
                           if(datas.role==0){//管理员,不可解绑
                             this.$alert(`
                            <div>手机号码“${value}”为其他企业管理员，不可添加</div>
-                           <div>真实姓名： ${datas.realname}</div>
+                           <div>真实姓名： ${datas.realname||"未填写"}</div>
                            <div>企业名称： ${datas.companyname}</div>
                            <div>会员状态：  ${datas.role==0?'管理层':'员工层'}</div>
                         `,  {
