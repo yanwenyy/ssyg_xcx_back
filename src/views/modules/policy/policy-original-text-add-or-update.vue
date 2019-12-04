@@ -191,7 +191,7 @@ export default {
       }).then(({data}) => {
         this.titleTxt="编辑"
         this.addHide=true
-        this.dataForm.policyPackDate = data.data.policyPackDate+'-01'
+        this.dataForm.policyPackDate = data.data.policyPackDate+'-02'
         this.dataForm.title = data.data.title
         this.dataForm.officialReleaseDate = this.commonDate.formatDate('', '', data.data.officialReleaseDate)
         this.dataForm.createDate = this.commonDate.formatTime('', '', data.data.createDate)

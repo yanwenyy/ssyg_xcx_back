@@ -4,18 +4,18 @@
       <el-form-item>
         <el-input v-model="dataForm.id" placeholder="订单号码" clearable></el-input>
       </el-form-item>
-      <!--<el-form-item>
+      <el-form-item>
         <el-select
-          v-model="dataForm.productid"
+          v-model="dataForm.productname"
           clearable
           placeholder="商品名称" style="width: 150px">
-          <el-option v-for="item in roleNameList"
-                     :label="item.name"
-                     :value="item.value"
-                     :key="item.value" >
+          <el-option v-for="item in productidList"
+                     :label="item.goodsName"
+                     :value="item.goodsName"
+                     :key="item.goodsId" >
           </el-option>
         </el-select>
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.companyid" placeholder="企业ID" clearable></el-input>
       </el-form-item>
@@ -42,17 +42,12 @@
       </el-form-item>
       <el-form-item label="支付时间：">
         <el-date-picker
-          v-model="dataForm.begin"
-          type="date"
-          value-format=“yyyy-MM-dd”
-          placeholder="选择日期">
-        </el-date-picker>
-        <span>--</span>
-        <el-date-picker
-          v-model="dataForm.end"
-          type="date"
-          value-format=“yyyy-MM-dd”
-          placeholder="选择日期">
+          v-model="timeS"
+          type="daterange"
+          range-separator="至"
+          value-format="yyyy-MM-dd"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -64,6 +59,8 @@
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
+      :default-sort = "{prop: 'paysuctime', order: 'desc'}"
+      @sort-change='sortChange'
       style="width: 100%;">
       <el-table-column
         prop="id"
@@ -125,18 +122,22 @@
         prop="paysuctime"
         header-align="center"
         align="center"
+        sortable="custom"
+        :formatter="commonDate.formatTime"
         label="支付时间">
       </el-table-column>
       <el-table-column
         prop="coachendtimeformat"
         header-align="center"
         align="center"
+        sortable="custom"
         label="辅导截止月份">
       </el-table-column>
       <el-table-column
         prop="vaildlasttimeformat"
         header-align="center"
         align="center"
+        sortable="custom"
         label="会员到期日期">
       </el-table-column>
     </el-table>
@@ -158,16 +159,21 @@
       return {
         dataForm: {
           id:'',
-          productid:'',
+          productname:'',
           companyid:'',
           companyname:'',
           online:'',
           nickname:'',
           begin:'',
-          end:''
+          end:'',
+          phone:''
         },
+        timeS:[],
+        productidList:[],
         onlineList:[{name:'微信',value:0},{name:'线下',value:1}],
         dataList: [],
+        prop:'paysuctime',
+        order:'desc',
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
@@ -175,13 +181,36 @@
         dataListSelections: []
       }
     },
-    activated () {
-      this.getDataList()
+    mounted() {
+      //商品名称下拉框
+      this.$http({
+        url: this.$http.adornUrl('/biz/wxorder/listForGoods'),
+        method: 'post',
+        data: this.$http.adornData()
+      }).then(({data}) => {
+        this.productidList = data.data
+      })
     },
     methods: {
+      //排序
+      sortChange (column, prop, order){
+        if(column.order=='descending'){
+          column.order='desc'
+        }
+        if(column.order=='ascending'){
+          column.order='asc'
+        }
+        this.prop=column.prop
+        this.order=column.order
+        this.getDataList ()
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
+        if(this.timeS.length!=0){
+          this.dataForm.begin=this.timeS[0]
+          this.dataForm.end=this.timeS[1]
+        }
         this.$http({
           url: this.$http.adornUrl('/biz/wxorder/listForMember'),
           method: 'post',
@@ -189,13 +218,16 @@
             'page': String(this.pageIndex),
             'limit': String(this.pageSize),
             'id':this.dataForm.id || undefined,
-            'productid':this.dataForm.productid || undefined,
+            'productname':this.dataForm.productname || undefined,
             'companyid':this.dataForm.companyid || undefined,
             'companyname':this.dataForm.companyname || undefined,
             'online':this.dataForm.online || undefined,
+            'phone':this.dataForm.phone || undefined,
             'nickname':this.dataForm.nickname || undefined,
             'begin':this.dataForm.begin || undefined,
-            'end':this.dataForm.end || undefined
+            'end':this.dataForm.end || undefined,
+            'prop':this.prop ,
+            'order':this.order
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

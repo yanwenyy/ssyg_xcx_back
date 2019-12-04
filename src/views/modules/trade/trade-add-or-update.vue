@@ -43,7 +43,7 @@
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
-              if (data && data.code === 0) {
+              if (data && data.code ==200) {
                 this.dataForm.tradeName = data.data.tradeName
                 this.dataForm.insertId = data.data.tradeId
               }

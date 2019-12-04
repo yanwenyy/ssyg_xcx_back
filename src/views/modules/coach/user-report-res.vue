@@ -46,6 +46,8 @@
       :data="dataList"
       border
       v-loading="dataListLoading"
+      :default-sort = "{prop: 'updateTime', order: 'desc'}"
+      @sort-change='sortChange'
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
       <el-table-column
@@ -101,14 +103,14 @@
         prop="affectExtent"
         header-align="center"
         align="center"
-        sortable
+        sortable="custom"
         label="相关度">
       </el-table-column>
       <el-table-column
         prop="updateTime"
         header-align="center"
         align="center"
-        sortable
+        sortable="custom"
         :formatter="commonDate.formatTime"
         label="提交时间">
       </el-table-column>
@@ -150,6 +152,8 @@
         relatedList:[{name:'不相关',value:0},{name:'相关',value:1}],
         dataList: [],
         monthList:[],
+        prop:'updateTime',
+        order:'desc',
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
@@ -187,6 +191,18 @@
           policyDate:''
         }
       },
+      //排序
+      sortChange (column, prop, order){
+        if(column.order=='descending'){
+          column.order='desc'
+        }
+        if(column.order=='ascending'){
+          column.order='asc'
+        }
+        this.prop=column.prop
+        this.order=column.order
+        this.getDataList ()
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
@@ -201,7 +217,9 @@
             'title':this.dataForm.title || undefined,
             'related':this.dataForm.related || undefined,
             'policyId':this.dataForm.policyId || undefined,
-            'policyDate':this.dataForm.policyId || undefined
+            'policyDate':this.dataForm.policyId || undefined,
+            'prop':this.prop ,
+            'order':this.order
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

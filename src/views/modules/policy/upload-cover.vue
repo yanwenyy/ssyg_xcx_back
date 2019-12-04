@@ -9,6 +9,7 @@
           :headers="headers"
           :action="UploadUrl()"
           :show-file-list="false"
+          accept="image/gif,image/jpeg,image/jpg,image/png"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -46,25 +47,18 @@
         this.visible = true
       },
       UploadUrl:function(){
-        return window.SITE_CONFIG['baseUrl']+'/sys/oss/upload'
+        return this.$http.adornUrl(`/sys/oss/upload`)
       },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
         this.cover=res.url
       },
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isJPG1 = file.type === 'image/png';
-        const isJPG2 = file.type === 'image/gif';
         const isLt100KB = file.size / 1024 <100;
-
-        if (!isJPG && !isJPG1 && !isJPG2) {
-          this.$message.error('上传图片只能是 JPG/PNG/GIF 格式!');
-        }
         if (!isLt100KB) {
           this.$message.error('上传图片大小不能超过 100KB!');
         }
-        return isJPG && isLt100KB;
+        return isLt100KB;
       }
     }
   }

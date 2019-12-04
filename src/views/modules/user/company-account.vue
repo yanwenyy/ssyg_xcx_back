@@ -332,8 +332,8 @@
                            <div>手机号码“${value}”已经是企业用户</div>
                            <div>真实姓名： ${datas.realname||"未填写"}</div>
                            <div>企业名称： ${datas.companyname}</div>
-                           <div>会员状态：  ${datas.vipStatus||"未填写"}</div>
-                           <div>会员状态：  ${datas.role==0?'管理层':'员工层'}</div>
+                           <div>会员状态：  ${datas.vaildlasttime>new Date().getTime()?'有效':'过期'}</div>
+                           <div>用户角色：  ${datas.role==0?'管理层':'员工层'}</div>
                         `, '提示', {
                         confirmButtonText: '解绑并添加至当前企业',
                         dangerouslyUseHTMLString: true
@@ -343,7 +343,7 @@
                            <div>手机号码“${value}”已在当前企业，不可重复添加</div>
                            <div>真实姓名： ${datas.realname||"未填写"}</div>
                            <div>企业名称： ${datas.companyname}</div>
-                           <div>会员状态：  ${datas.role==0?'管理层':'员工层'}</div>
+                           <div>用户角色：  ${datas.role==0?'管理层':'员工层'}</div>
                         `,  {
                             dangerouslyUseHTMLString: true
                           });

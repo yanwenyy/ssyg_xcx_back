@@ -51,18 +51,28 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item>
+        <el-select v-model="dataForm.vipStatus" placeholder="问答剩余量">
+          <el-option
+            v-for="item in vipStatus"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="服务到期时间">
         <el-date-picker
           v-model="dataForm.vaildStartTime"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
           v-model="dataForm.vaildLastTime"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -70,14 +80,14 @@
         <el-date-picker
           v-model="dataForm.createStart"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
           v-model="dataForm.createEnd"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -240,10 +250,10 @@
         vipStatus:[//会员状态
           {
             value: '0',
-            label: '是'
+            label: '有效'
           },{
             value: '1',
-            label: '否'
+            label: '过期'
           }
         ],
         trade:[],//行业
@@ -277,10 +287,10 @@
             'companyScale': this.dataForm.companyScale,
             'city': this.dataForm.city,
             'vipStatus': this.dataForm.vipStatus,
-            'vaildStartTime': this.commonDate.chineseCharToElishChar(this.dataForm.vaildStartTime),
-            'vaildLastTime': this.commonDate.chineseCharToElishChar(this.dataForm.vaildLastTime),
-            'createStart': this.commonDate.chineseCharToElishChar(this.dataForm.createStart),
-            'createEnd': this.commonDate.chineseCharToElishChar(this.dataForm.createEnd),
+            'vaildStartTime': this.dataForm.vaildStartTime,
+            'vaildLastTime': this.dataForm.vaildLastTime,
+            'createStart': this.dataForm.createStart,
+            'createEnd': this.dataForm.createEnd,
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

@@ -103,7 +103,7 @@
           header-align="center"
           align="center"
           label="用户角色">
-          <template slot-scope="scope"> {{scope.row.role=0?'管理员':'员工'}}</template>
+          <template slot-scope="scope"> {{scope.row.role==0?'管理员':'员工'}}</template>
         </el-table-column>
         <el-table-column
           prop="positiotn"
@@ -117,13 +117,13 @@
           align="center"
           label="行业">
         </el-table-column>
-        <el-table-column
+        <!--<el-table-column
           prop="vipStatus"
           header-align="center"
           align="center"
           label="会员状态">
-          <template slot-scope="scope"> {{scope.row.vipStatus=0?'是':'否'}}</template>
-        </el-table-column>
+          <template slot-scope="scope"> {{scope.row.vipStatus=0?'有效':'过期'}}</template>
+        </el-table-column>-->
         <el-table-column
           prop="bindingTime"
           header-align="center"

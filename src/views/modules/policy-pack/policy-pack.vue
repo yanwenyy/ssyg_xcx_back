@@ -154,7 +154,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('biz/policypack/list'),
+          url: this.$http.adornUrl('/biz/policypack/list'),
           method: 'post',
           data: this.$http.adornData({
             'currPage': String(this.pageIndex),

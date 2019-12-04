@@ -11,14 +11,14 @@
         <el-date-picker
           v-model="dataForm.start"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
           v-model="dataForm.end"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -126,8 +126,8 @@
             'pageSize': this.pageSize,
             'phone': this.dataForm.phone,
             'nickname': this.dataForm.nickname,
-            'start': this.commonDate.chineseCharToElishChar(this.dataForm.start),
-            'end': this.commonDate.chineseCharToElishChar(this.dataForm.end)
+            'start': this.dataForm.start,
+            'end': this.dataForm.end
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

@@ -4,18 +4,18 @@
       <el-form-item>
         <el-input v-model="dataForm.id" placeholder="订单号码" clearable></el-input>
       </el-form-item>
-      <!--<el-form-item>
+      <el-form-item>
         <el-select
-          v-model="dataForm.productid"
+          v-model="dataForm.makeupdate"
           clearable
           placeholder="补考月份" style="width: 150px">
-          <el-option v-for="item in roleNameList"
+          <el-option v-for="item in makeupdateList"
                      :label="item.name"
                      :value="item.value"
                      :key="item.value" >
           </el-option>
         </el-select>
-      </el-form-item>-->
+      </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.companyid" placeholder="企业ID" clearable></el-input>
       </el-form-item>
@@ -42,17 +42,12 @@
       </el-form-item>
       <el-form-item label="支付时间：">
         <el-date-picker
-          v-model="dataForm.begin"
-          type="date"
-          value-format=“yyyy-MM-dd”
-          placeholder="选择日期">
-        </el-date-picker>
-        <span>--</span>
-        <el-date-picker
-          v-model="dataForm.end"
-          type="date"
-          value-format=“yyyy-MM-dd”
-          placeholder="选择日期">
+          v-model="timeS"
+          type="daterange"
+          range-separator="至"
+          value-format="yyyy-MM-dd"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -119,6 +114,7 @@
         prop="paysuctime"
         header-align="center"
         align="center"
+        :formatter="commonDate.formatTime"
         label="支付时间">
       </el-table-column>
     </el-table>
@@ -139,6 +135,7 @@
     data () {
       return {
         dataForm: {
+          makeupdate:'',
           id:'',
           productid:'',
           companyid:'',
@@ -148,6 +145,8 @@
           begin:'',
           end:''
         },
+        timeS:[],
+        makeupdateList:[],
         onlineList:[{name:'微信',value:0},{name:'线下',value:1}],
         dataList: [],
         pageIndex: 1,
@@ -160,10 +159,32 @@
     activated () {
       this.getDataList()
     },
+    mounted() {
+      //补考月份
+      this.$http({
+        url: this.$http.adornUrl('/biz/wxorder/listForDate'),
+        method: 'post',
+        data: this.$http.adornData()
+      }).then(({data}) => {
+        for(var i=0;i<data.data.length;i++){
+          for(var key in data.data[i]){
+            this.makeupdateList.push({
+              'name':key,
+              'value':key
+            })
+          }
+        }
+
+      })
+    },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
+        if(this.timeS.length!=0){
+          this.dataForm.begin=this.timeS[0]
+          this.dataForm.end=this.timeS[1]
+        }
         this.$http({
           url: this.$http.adornUrl('/biz/wxorder/listForResit'),
           method: 'post',
@@ -177,7 +198,8 @@
             'online':this.dataForm.online || undefined,
             'nickname':this.dataForm.nickname || undefined,
             'begin':this.dataForm.begin || undefined,
-            'end':this.dataForm.end || undefined
+            'end':this.dataForm.end || undefined,
+            'makeupdate':this.dataForm.makeupdate || undefined
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

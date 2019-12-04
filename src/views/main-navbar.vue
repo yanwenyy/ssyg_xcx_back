@@ -2,7 +2,7 @@
   <nav class="site-navbar" :class="'site-navbar--' + navbarLayoutType">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">365顾问宝管理后台</a>
+        <a class="site-navbar__brand-lg" href="javascript:;">省税一哥后台管理</a>
         <a class="site-navbar__brand-mini" href="javascript:;"></a>
       </h1>
     </div>

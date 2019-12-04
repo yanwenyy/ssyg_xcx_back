@@ -54,14 +54,14 @@
         <el-date-picker
           v-model="dataForm.regStart"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
           v-model="dataForm.regEnd"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -69,14 +69,14 @@
         <el-date-picker
           v-model="dataForm.bindStart"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
           v-model="dataForm.bindEnd"
           type="date"
-          value-format=“yyyy-MM-dd”
+          value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
@@ -139,7 +139,7 @@
         header-align="center"
         align="center"
         label="用户角色">
-        <template slot-scope="scope"> {{scope.row.role=0?'管理员':'员工'}} </template>
+        <template slot-scope="scope"> {{scope.row.role==0?'管理员':'员工'}} </template>
       </el-table-column>
       <el-table-column
         prop="province,city"
@@ -155,7 +155,7 @@
         label="行业">
       </el-table-column>
       <el-table-column
-        prop="joinCompany"
+        prop="vipStatus"
         header-align="center"
         align="center"
         label="会员状态">
@@ -250,10 +250,10 @@
         vipStatus:[//会员状态
           {
             value: '0',
-            label: '是'
+            label: '有效'
           },{
             value: '1',
-            label: '否'
+            label: '过期'
           }
         ],
         trade:[]//行业
@@ -286,10 +286,10 @@
             'vipStatus': this.dataForm.vipStatus,
             'trade': this.dataForm.trade,
             'city': this.dataForm.city,
-            'regStart': this.commonDate.chineseCharToElishChar(this.dataForm.regStart),
-            'regEnd': this.commonDate.chineseCharToElishChar(this.dataForm.regEnd),
-            'bindStart': this.commonDate.chineseCharToElishChar(this.dataForm.bindStart),
-            'bindEnd': this.commonDate.chineseCharToElishChar(this.dataForm.bindEnd)
+            'regStart': this.dataForm.regStart,
+            'regEnd': this.dataForm.regEnd,
+            'bindStart': this.dataForm.bindStart,
+            'bindEnd': this.dataForm.bindEnd
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

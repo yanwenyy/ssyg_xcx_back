@@ -10,7 +10,7 @@
           v-model="dataForm.policyDate"
           type="month"
           :disabled="disabledStatus"
-          value-format="yyyy-MM-dd"
+          value-format="yyyy-MM"
           placeholder="选择对应月份">
         </el-date-picker>
       </el-form-item>
@@ -82,6 +82,9 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          if(this.dataForm.policyDate.substr(7,3)!="-02"){
+            this.dataForm.policyDate=this.dataForm.policyDate+'-02'
+          }
           this.$http({
             url: this.$http.adornUrl(`/biz/policypack/${!this.dataForm.id ? 'save' : 'update'}`),
             method: 'post',
@@ -98,7 +101,7 @@ export default {
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.$router.push({"name": "policy-pack"})
+                  this.closePage()
                 }
               })
 

@@ -228,7 +228,7 @@
         styleList:[],
         pubMinList:[{label:'普适型',value:1},{label:'小众型',value:2}],
         monthList:[],
-        delFlagList:[{label:'显示',value:0},{label:'在线',value:1}],
+        delFlagList:[{label:'在线',value:0},{label:'隐藏',value:1}],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,

@@ -5,7 +5,7 @@
         <el-button v-if="isAuth('biz:trade:save')" type="warning" @click="addOrUpdateHandle()">新增</el-button>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.tradeName" placeholder="行业名称" clearable></el-input>
+        <el-input v-model="dataForm.name" placeholder="行业名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="getDataList()">搜索</el-button>
@@ -68,7 +68,7 @@
     data () {
       return {
         dataForm: {
-          tradeName: ''
+          name: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -95,7 +95,7 @@
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'tradeName': this.dataForm.tradeName || undefined
+            'name': this.dataForm.name || undefined
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

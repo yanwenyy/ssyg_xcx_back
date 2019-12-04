@@ -11,7 +11,7 @@
         <div class="login-main">
           <div class="login-img"><img src="~@/assets/img/login_img.png"/></div>
           <div class="login-text">
-            <h3 class="login-title">365顾问宝管理后台</h3>
+            <h3 class="login-title">省税一哥后台管理</h3>
             <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
               <el-form-item prop="username">
                 <el-input v-model="dataForm.username" placeholder="用户名"></el-input>

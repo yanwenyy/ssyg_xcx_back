@@ -11,6 +11,7 @@
         <el-upload
           class="avatar-uploader"
           :headers="headers"
+          accept="image/gif,image/jpeg,image/jpg,image/png"
           :action="UploadUrl()"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
@@ -78,25 +79,18 @@
         })
       },
       UploadUrl:function(){
-        return window.SITE_CONFIG['baseUrl']+'/sys/oss/upload'
+        return this.$http.adornUrl(`/sys/oss/upload`)
       },
       handleAvatarSuccess(res, file) {
         this.imageUrl = URL.createObjectURL(file.raw);
         this.dataForm.icon=res.url
       },
       beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isJPG1 = file.type === 'image/png';
-        const isJPG2 = file.type === 'image/gif';
         const isLt50KB = file.size / 1024 <50;
-
-        if (!isJPG && !isJPG1 && !isJPG2) {
-          this.$message.error('上传图片只能是 JPG/PNG/GIF 格式!');
-        }
         if (!isLt50KB) {
           this.$message.error('上传图片大小不能超过 50KB!');
         }
-        return isJPG && isLt50KB;
+        return isLt50KB;
       },
       // 表单提交
       dataFormSubmit () {
