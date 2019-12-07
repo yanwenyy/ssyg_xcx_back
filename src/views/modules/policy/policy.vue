@@ -296,7 +296,7 @@
             data: this.$http.adornData({
               'id':id,
               'delFlag':0,
-              'policyPackDate':policyPackDate+'-01',
+              'policyPackDate':policyPackDate+'-02',
               'type':type
             })
           }).then(({data}) => {

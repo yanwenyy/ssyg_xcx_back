@@ -78,6 +78,8 @@
         showPos:[
           {value:1, label:'首页'},
           {value:2, label:'评估页'},
+          {value:3, label:'我的报告-个人/员工'},
+          {value:4, label:'我的报告-管理层'}
         ],
         jumpLink:[
           {value:1, label:'不跳转'},

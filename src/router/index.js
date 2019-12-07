@@ -77,7 +77,9 @@ const mainRoutes = {
     {path:'/user-report-res-view', component:_import('modules/coach/user-report-res-view'), name:'user-report-res-view', meta:{title:'用户报告结果查看',isTab: true }},
     /*{path:'/member-order', component:_import('modules/order/member-order'), name:'member-order', meta:{title:'会员订单',isTab: true }},
     {path:'/exam-order', component:_import('modules/order/exam-order'), name:'exam-order', meta:{title:'补考订单',isTab: true }},*/
-  ],
+    {path:'/company-question-view', component:_import('modules/question-record/company-question-view'), name:'company-question-view', meta:{title:'企业问答查看',isTab: true }},
+    {path:'/question-record-view', component:_import('modules/question-record/question-record-view'), name:'question-record-view', meta:{title:'问题管理查看',isTab: true }}
+    ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')
     if (!token || !/\S/.test(token)) {

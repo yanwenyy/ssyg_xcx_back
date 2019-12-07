@@ -20,7 +20,7 @@
         <el-input v-model="dataForm.phone" placeholder="手机号" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.policyId" placeholder="试题ID" clearable></el-input>
+        <el-input v-model="dataForm.policyId" placeholder="政策ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.title" placeholder="政策" clearable></el-input>

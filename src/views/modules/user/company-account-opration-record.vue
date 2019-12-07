@@ -153,10 +153,10 @@
         typeList:[//操作类型
           {
             value: '1',
-            label: '企业操作'
+            label: '前台操作'
           },{
             value: '2',
-            label: '操作类型'
+            label: '后台操作'
           }
         ],
         attrList:[//操作属性
@@ -165,11 +165,11 @@
             label: '加入企业'
           },{
             value: '2',
-            label: '删除'
+            label: '解绑'
           },
           {
             value: '3',
-            label: '解绑'
+            label: '删除'
           },{
             value: '4',
             label: '设置管理员'

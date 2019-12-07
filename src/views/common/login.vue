@@ -1,8 +1,7 @@
 <template>
   <div class="site-wrapper site-page--login">
     <div class="site-header__wrapper">
-      <img src="~@/assets/img/logo.png" class="logo_img">
-      <img src="~@/assets/img/logo_title.png" class="logo_title">
+      <img src="~@/assets/img/logo.png" class="logo_img" style="width:250px">
     </div>
     <div class="site-content__wrapper">
       <div class="site-content">

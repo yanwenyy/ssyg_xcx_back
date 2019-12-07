@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item>
         <el-select
-          v-model="dataForm.roleName"
+          v-model="dataForm.role"
           clearable
           placeholder="用户类型" style="width: 150px">
           <el-option v-for="item in roleNameList"
@@ -123,7 +123,7 @@
         label="题干">
       </el-table-column>
       <el-table-column
-        prop="rigwronStatus"
+        prop="rigwronStatusName"
         header-align="center"
         align="center"
         label="答案结果">
@@ -165,7 +165,7 @@
         dataForm: {
           realName: '',
           phone:'',
-          roleName:'',
+          role:'',
           policyTitle:'',
           questionId:'',
           companyId:'',
@@ -174,8 +174,8 @@
           policyDate:''
         },
         monthList:[],
-        roleNameList:[{name:'管理员',value:0},{name:'员工',value:1}],
-        rigwronStatusList:[{name:'正确',value:0},{name:'错误',value:1}],
+        roleNameList:[{name:'管理员',value:'0'},{name:'员工',value:'1'}],
+        rigwronStatusList:[{name:'正确',value:'0'},{name:'错误',value:'1'}],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -208,7 +208,7 @@
         this.dataForm={
           realName: '',
           phone:'',
-          roleName:'',
+          role:'',
           policyTitle:'',
           questionId:'',
           companyId:'',
@@ -228,7 +228,7 @@
             'limit': String(this.pageSize),
             'realName': this.dataForm.realName || undefined,
             'phone':this.dataForm.phone || undefined,
-            'roleName':this.dataForm.roleName || undefined,
+            'role':this.dataForm.role || undefined,
             'policyTitle':this.dataForm.policyTitle || undefined,
             'questionId':this.dataForm.questionId || undefined,
             'companyId':this.dataForm.companyId || undefined,

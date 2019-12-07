@@ -16,9 +16,9 @@
       <el-form-item label="地区">
         <v-distpicker hide-area :province="dataForm.province" :city="dataForm.city" @selected="onSelected"></v-distpicker>
       </el-form-item>
-      <el-form-item label="行业">
-        <el-checkbox-group v-model="dataForm.trade" :max="max">
-          <el-checkbox v-for="item in tradeList" :label="item.tradeId" :key="item.tradeId" @change="tradeChange">{{item.tradeName}}</el-checkbox>
+      <el-form-item label="行业" prop="trade">
+        <el-checkbox-group v-model="dataForm.trade" :max="2">
+          <el-checkbox v-for="item in tradeList" name="trade" :label="item.tradeId" :key="item.tradeId" @change="tradeChange">{{item.tradeName}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="职务">
@@ -68,10 +68,13 @@
         positiotnList:[],
         dataRule: {
           phone: [
-            { phone: true, message: '手机号不能为空', trigger: 'blur' }
+            { required: true, message: '手机号不能为空', trigger: 'blur' }
           ],
           realname: [
-            { realname: true, message: '真实姓名不能为空', trigger: 'blur' }
+            { required: true, message: '真实姓名不能为空', trigger: 'blur' }
+          ],
+          trade: [
+            { type: 'array', required: true, message: '请至少选择一个行业', trigger: 'change' }
           ]
         }
       }

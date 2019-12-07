@@ -17,7 +17,15 @@
         <div style="border: 1px solid #eee;padding: 5px 0;margin-bottom: 10px ;margin-top: 10px">
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策ID"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policyId"></el-input></el-form-item>
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策标题"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policyTitle"></el-input></el-form-item>
-          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="文件号"><el-input style="width:220px;" :disabled="true" v-model="dataForm.fileNum"></el-input></el-form-item>
+          <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="文件号"><el-input style="width:220px;"  :disabled="true" v-model="dataForm.fileNum"></el-input></el-form-item>
+          <el-form-item label="政策月份">
+            <el-date-picker
+              v-model="dataForm.policyDate"
+              type="month"
+              :disabled="true"
+              value-format="yyyy-MM">
+            </el-date-picker>
+          </el-form-item>
         </div>
       </el-form-item>
       <el-form-item label="题型" >
@@ -79,6 +87,7 @@
           fileNum:'',
           policyId:'',
           policyTitle:'',
+          policyDate:'',
           id:this.$route.query.id || undefined,
           type:'',
           sort: '',
@@ -107,6 +116,7 @@
           this.dataForm.questionTitle=data.data.questionTitle
           this.dataForm.updateDate=this.commonDate.formatTime('','',data.data.updateDate)
           this.dataForm.quAnswers=data.data.quAnswers
+          this.dataForm.policyDate=data.data.policyDate
           for(var i=0;i<this.dataForm.quAnswers.length;i++){
             this.dataForm.quAnswers[i].status=parseInt(this.dataForm.quAnswers[i].status)
           }

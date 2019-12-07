@@ -1,9 +1,9 @@
 <template>
   <div class="mod-policy-pack">
     <h2 style="border-bottom: 1px solid #ccc;padding-bottom: 20px;margin-bottom: 50px">新增</h2>
-    <el-form label-position="left" label-width="100px" :model="dataForm" ref="dataForm">
+    <el-form label-position="left" label-width="100px" :model="dataForm" :rules="dataRule" ref="dataForm">
       <div class="two-title">企业信息</div>
-      <el-form-item label="企业名称">
+      <el-form-item label="企业名称" prop="companyname">
         <el-input maxlength="20" v-model="dataForm.companyname"   placeholder="企业名称"></el-input>
       </el-form-item>
       <el-form-item label="企业性质">
@@ -26,9 +26,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="行业">
+      <el-form-item label="行业" prop="trade">
         <el-checkbox-group v-model="dataForm.trade">
-          <el-checkbox v-for="item in tradeList" :label="item.tradeId" :key="item.tradeId">{{item.tradeName}}</el-checkbox>
+          <el-checkbox v-for="item in tradeList" :label="item.tradeId" name="trade" :key="item.tradeId">{{item.tradeName}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="地区">
@@ -111,6 +111,14 @@
           trade: [],
           vaildLastTime: "",
           vipStartDate: "",
+        },
+        dataRule:{
+          companyname: [
+            { required: true, message: '企业名称不能为空', trigger: 'blur' }
+          ],
+          trade: [
+            { type: 'array', required: true, message: '请至少选择一个行业', trigger: 'change' }
+          ]
         },
         tradeList:[],//行业
         companyScale:[],//规模

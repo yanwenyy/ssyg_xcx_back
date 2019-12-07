@@ -73,8 +73,8 @@
         align="center"
         label="状态">
         <template slot-scope="scope">
-          <span v-if="scope.row.showFlag==0">显示</span>
-          <span v-if="scope.row.showFlag==1">隐藏</span>
+          <el-button type="text" v-if="scope.row.showFlag==0" @click="updateShowFlag(scope.row.id)">显示</el-button>
+          <el-button type="text" v-if="scope.row.showFlag==1" @click="updateShowFlag(scope.row.id)">隐藏</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -198,6 +198,52 @@
             }
           })
         }).catch(() => {})
+      },
+      //更新显示状态
+      updateShowFlag (id) {
+        this.$http({
+          url: this.$http.adornUrl(`/biz/banner/showorhide?id=${id}`),
+          method: 'post'
+        }).then(({data}) => {
+          if (data && data.code == 200) {
+            this.getDataList()
+          }else{
+            if(data.message==undefined){
+              this.$message.error(data.msg)
+            }else{
+              this.$message.error(data.message)
+            }
+          }
+        })
+
+        /*this.$confirm(`状态变更后，将进入测试期`, '您确定本月政策已全部更新完成吗？', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/biz/policypack/update/finish'),
+            method: 'post',
+            data: this.$http.adornData({'id':id})
+          }).then(({data}) => {
+            if (data && data.code == 200) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              if(data.message==undefined){
+                this.$message.error(data.msg)
+              }else{
+                this.$message.error(data.message)
+              }
+            }
+          })
+        }).catch(() => {})*/
       }
     }
   }

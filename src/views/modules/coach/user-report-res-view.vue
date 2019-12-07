@@ -15,6 +15,14 @@
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策ID"><el-input style="width:220px;" :disabled="true" v-model="dataForm.policyId"></el-input></el-form-item>
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="政策标题"><el-input style="width:220px;" :disabled="true" v-model="dataForm.title"></el-input></el-form-item>
           <el-form-item style="margin: 5px 0 10px 0;color:#303133" label="文件号"><el-input style="width:220px;" :disabled="true" v-model="dataForm.fileNum"></el-input></el-form-item>
+          <el-form-item label="政策月份">
+            <el-date-picker
+              v-model="dataForm.policyDate"
+              type="month"
+              :disabled="true"
+              value-format="yyyy-MM">
+            </el-date-picker>
+          </el-form-item>
         </div>
       </el-form-item>
       <el-form-item label="报告结果">
@@ -38,7 +46,7 @@
             <el-input type="textarea" :disabled="true" v-model="dataForm.opinion" style="width: 500px"></el-input>
           </el-form-item>
           <el-form-item label=" " style="margin: 5px 0 10px 0;color:#303133">
-            <p>相关执行部门及执行办法</p>
+            <p>需知晓部门及注意事项</p>
             <el-input type="textarea" :disabled="true" v-model="dataForm.executive" style="width: 500px"></el-input>
           </el-form-item>
           <el-form-item label="结果" style="margin: 5px 0 10px 0;color:#303133">
@@ -80,6 +88,7 @@
           fileNum:'',
           policyId:'',
           title:'',
+          policyDate:'',
           id:this.$route.query.id || undefined,
           affectExtent:'',
           affect:'',
@@ -109,6 +118,7 @@
           this.dataForm.affect=data.data.affect
           this.dataForm.opinion=data.data.opinion
           this.dataForm.executive=data.data.executive
+          this.dataForm.policyDate=data.data.policyDate
           this.dataForm.updateTime=this.commonDate.formatTime('','',data.data.updateTime)
 
         })

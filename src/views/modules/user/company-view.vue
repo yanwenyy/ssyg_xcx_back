@@ -16,7 +16,7 @@
         <el-input v-model="dataForm.phone" :disabled="true" placeholder="手机号"></el-input>
       </el-form-item>
       <el-form-item label="地区">
-        <el-input v-model="dataForm.province+dataForm.city" :disabled="true" placeholder="地区"></el-input>
+        <el-input v-model="address" :disabled="true" placeholder="地区"></el-input>
       </el-form-item>
       <el-form-item label="行业">
         <el-input v-model="dataForm.tradeName" :disabled="true" placeholder="行业"></el-input>
@@ -103,16 +103,9 @@
         }
       };
       return {
+        address:'',
         imageUrl: '',
         id:this.$route.query.id,
-        showPos:[
-          {value:1, label:'首页'},
-          {value:2, label:'评估页'},
-        ],
-        jumpLink:[
-          {value:1, label:'不跳转'},
-          {value:2, label:'H5'},
-        ],
         dataForm:{
 
         }
@@ -128,6 +121,9 @@
           if (data && data.code == 200) {
             var datas=data.data;
             this.dataForm = datas;
+            if(this.dataForm.province!=null){
+              this.address=this.dataForm.province+this.dataForm.city
+            }
           }
 
         })

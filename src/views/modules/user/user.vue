@@ -73,6 +73,13 @@
         label="是否加入过企业">
       </el-table-column>
       <el-table-column
+        prop="ifTrial"
+        header-align="center"
+        align="center"
+        :formatter="jionStatus"
+        label="是否领取试用">
+      </el-table-column>
+      <el-table-column
         prop="createtime"
         header-align="center"
         align="center"
@@ -205,8 +212,7 @@
           end: ''
         }
       },
-
-      // 是否加入企业
+      // 是否加入企业\是否试用
       jionStatus (row, column, cellValue) {
         if (cellValue == "1"){
           return '是';

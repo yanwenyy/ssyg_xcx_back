@@ -36,14 +36,14 @@
       </el-form-item>
       <el-form-item label="会员时间">
         <el-date-picker
-          v-model="dataForm.vaildstarttime"
+          v-model="dataForm.vipStartDate"
           type="date"
           :disabled="true"
           placeholder="选择日期">
         </el-date-picker>
         <span class="date-line">--</span>
         <el-date-picker
-          v-model="dataForm.vaildlasttime"
+          v-model="dataForm.vaildLastTime"
           type="date"
           :disabled="true"
           placeholder="选择日期">
@@ -51,14 +51,14 @@
       </el-form-item>
       <el-form-item label="会员辅导周期">
         <el-date-picker
-          v-model="dataForm.coachstarttime"
+          v-model="dataForm.coachStartTime"
           type="date"
           :disabled="true"
           placeholder="选择日期">
         </el-date-picker>
         <span class="date-line">--</span>
         <el-date-picker
-          v-model="dataForm.coachendtime"
+          v-model="dataForm.coachEndTime"
           type="date"
           :disabled="true"
           placeholder="选择日期">
