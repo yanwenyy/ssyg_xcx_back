@@ -2,7 +2,7 @@
   <div class="mod-policy">
     <ul class="ul-tab-title">
       <li @click="closePage();$router.push({ name: 'policy-unscramble-view',query:{id:dataForm.policyId} })">逐条解读</li>
-      <li class="pack">深度解读</li>
+      <li class="pack">延伸解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-contrast-view',query:{id:dataForm.policyId} })">对比解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-official-view',query:{id:dataForm.policyId} })">官方解读</li>
     </ul>

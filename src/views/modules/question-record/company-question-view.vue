@@ -11,6 +11,7 @@
         header-align="center"
         align="center"
         label="序号">
+        <template slot-scope="scope">{{dataListLen-scope.$index}}</template>
       </el-table-column>
       <el-table-column
         prop="userName"
@@ -40,6 +41,7 @@
     data () {
       return {
         uuid:this.$route.query.id,
+        dataListLen:'',
         dataList: [],
         prop:'',
         order:'',
@@ -59,7 +61,8 @@
           data: this.$http.adornData()
         }).then(({data}) => {
           if (data && data.code == 200) {
-            this.dataList = data.data.list
+            this.dataList = data.data
+            this.dataListLen = data.data.length
             this.totalPage = data.data.totalCount
           } else {
             this.dataList = []

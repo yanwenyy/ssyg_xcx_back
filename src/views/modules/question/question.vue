@@ -163,7 +163,8 @@
           url: this.$http.adornUrl('/biz/policyquestion/list/all'),
           method: 'Post',
           data: this.$http.adornData({
-
+            'page': String(this.pageIndex),
+            'limit': String(this.pageSize),
             "id":this.dataForm.id || undefined,
             'type':this.dataForm.type || undefined,
             'policyDate':this.dataForm.policyDate || undefined,

@@ -4,6 +4,36 @@ import router from '@/router'
 import qs from 'qs'
 import merge from 'lodash/merge'
 import { clearLoginInfo } from '@/utils'
+import { Loading } from 'element-ui';
+let loading        //定义loading变量
+function startLoading() {    //使用Element loading-start 方法
+  loading = Loading.service({
+    lock: true,
+    text: 'loading……',
+    background: 'rgba(0, 0, 0, 0.7)'
+  })
+}
+function endLoading() {    //使用Element loading-close 方法
+  loading.close()
+}
+//那么 showFullScreenLoading() tryHideFullScreenLoading() 要干的事儿就是将同一时刻的请求合并。
+//声明一个变量 needLoadingRequestCount，每次调用showFullScreenLoading方法 needLoadingRequestCount + 1。
+//调用tryHideFullScreenLoading()方法，needLoadingRequestCount - 1。needLoadingRequestCount为 0 时，结束 loading。
+let needLoadingRequestCount = 0
+export function showFullScreenLoading() {
+  if (needLoadingRequestCount === 0) {
+    startLoading()
+  }
+  needLoadingRequestCount++
+}
+
+export function tryHideFullScreenLoading() {
+  if (needLoadingRequestCount <= 0) return
+  needLoadingRequestCount--
+  if (needLoadingRequestCount === 0) {
+    endLoading()
+  }
+}
 
 const http = axios.create({
   timeout: 1000 * 30,
@@ -18,6 +48,7 @@ const http = axios.create({
  */
 http.interceptors.request.use(config => {
   config.headers['token'] = Vue.cookie.get('token') // 请求头带上token
+  showFullScreenLoading()
   return config
 }, error => {
   return Promise.reject(error)
@@ -31,6 +62,7 @@ http.interceptors.response.use(response => {
     clearLoginInfo()
     router.push({ name: 'login' })
   }
+  tryHideFullScreenLoading()
   return response
 }, error => {
   return Promise.reject(error)

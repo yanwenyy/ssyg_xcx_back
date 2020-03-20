@@ -4,7 +4,7 @@
       <el-form-item>
         <el-input v-model="dataForm.id" placeholder="订单号码" clearable></el-input>
       </el-form-item>
-      <el-form-item>
+      <!--<el-form-item>
         <el-select
           v-model="dataForm.productname"
           clearable
@@ -15,7 +15,7 @@
                      :key="item.goodsId" >
           </el-option>
         </el-select>
-      </el-form-item>
+      </el-form-item>-->
       <el-form-item>
         <el-input v-model="dataForm.companyid" placeholder="企业ID" clearable></el-input>
       </el-form-item>
@@ -169,8 +169,8 @@
           phone:''
         },
         timeS:[],
-        productidList:[],
-        onlineList:[{name:'微信',value:0},{name:'线下',value:1}],
+       /* productidList:[],*/
+        onlineList:[{name:'微信',value:"0"},{name:'线下',value:"1"}],
         dataList: [],
         prop:'paysuctime',
         order:'desc',
@@ -181,7 +181,7 @@
         dataListSelections: []
       }
     },
-    mounted() {
+   /* mounted() {
       //商品名称下拉框
       this.$http({
         url: this.$http.adornUrl('/biz/wxorder/listForGoods'),
@@ -190,7 +190,7 @@
       }).then(({data}) => {
         this.productidList = data.data
       })
-    },
+    },*/
     methods: {
       //排序
       sortChange (column, prop, order){

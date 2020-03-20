@@ -8,7 +8,7 @@
           placeholder="辅导月份" style="width: 150px">
           <el-option v-for="item in monthList"
                      :label="item.policyDateKey"
-                     :value="item.policyDateValue"
+                     :value="item.policyDateKey"
                      :key="item.policyDateValue">
           </el-option>
         </el-select>
@@ -56,6 +56,7 @@
         align="center"
         width="60"
         label="序号">
+        <template slot-scope="scope">{{totalPage-scope.$index-(pageIndex-1)*10}}</template>
       </el-table-column>
       <el-table-column
         prop="companyId"
@@ -149,7 +150,7 @@
           related:'',
           policyDate:''
         },
-        relatedList:[{name:'不相关',value:0},{name:'相关',value:1}],
+        relatedList:[{name:'不相关',value:'0'},{name:'相关',value:'1'}],
         dataList: [],
         monthList:[],
         prop:'updateTime',
@@ -217,7 +218,7 @@
             'title':this.dataForm.title || undefined,
             'related':this.dataForm.related || undefined,
             'policyId':this.dataForm.policyId || undefined,
-            'policyDate':this.dataForm.policyId || undefined,
+            'policyDate':this.dataForm.policyDate || undefined,
             'prop':this.prop ,
             'order':this.order
           })

@@ -37,6 +37,7 @@
         header-align="center"
         align="center"
         width="180"
+        :formatter="commonDate.formatTime"
         label="创建时间">
       </el-table-column>
       <el-table-column

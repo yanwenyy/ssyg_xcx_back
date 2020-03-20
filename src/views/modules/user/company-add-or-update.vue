@@ -26,7 +26,7 @@
         <v-distpicker hide-area :province="dataForm.province" :city="dataForm.city" @selected="onSelected"></v-distpicker>
       </el-form-item>
       <el-form-item label="行业">
-        <el-checkbox-group v-model="dataForm.trade">
+        <el-checkbox-group v-model="dataForm.trade" :max="3">
           <el-checkbox v-for="item in tradeList" :label="item.tradeId" :key="item.tradeId">{{item.tradeName}}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>

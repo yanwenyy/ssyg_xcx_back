@@ -20,7 +20,7 @@
           placeholder="问题涉及行业" style="width: 150px">
           <el-option v-for="item in tradeList"
                      :label="item.name"
-                     :value="item.uuid"
+                     :value="item.name"
                      :key="item.uuid" >
           </el-option>
         </el-select>
@@ -32,7 +32,7 @@
           placeholder="税种" style="width: 150px">
           <el-option v-for="item in taxList"
                      :label="item.name"
-                     :value="item.uuid"
+                     :value="item.name"
                      :key="item.uuid" >
           </el-option>
         </el-select>
@@ -61,9 +61,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="支付时间：">
+      <el-form-item label="发布时间：">
         <el-date-picker
-          v-model="timeS"
+          v-model="dataForm.timeS"
           type="daterange"
           range-separator="至"
           value-format="yyyy-MM-dd"
@@ -131,6 +131,7 @@
         header-align="center"
         align="center"
         label="采纳状态">
+        <template slot-scope="scope"> {{getStatus(scope.row.status)}} </template>
       </el-table-column>
       <el-table-column
         prop="duration"
@@ -143,6 +144,7 @@
         header-align="center"
         align="center"
         label="显示状态">
+        <template slot-scope="scope"> {{scope.row.delFlag==1?'隐藏':'显示'}} </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -151,7 +153,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="$router.push({ name: 'company-question-view',query:{id:scope.row.uuid} })">查看</el-button>
+          <el-button type="text" size="small" @click="$router.push({ name: 'question-record-view',query:{id:scope.row.uuid} })">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -172,6 +174,7 @@
     data () {
       return {
         dataForm: {
+          timeS:[],
           uuid:'',
           thirdUserName:'',
           content:'',
@@ -183,12 +186,12 @@
           begin:'',
           end:''
         },
-        statusList:[{name:'无答案',value:1},{name:'未采纳答案',value:2},{name:'已采纳并公开',value:3},{name:'已采纳不公开',value:4},{name:'未采纳平分',value:5},{name:'未回答退回',value:6},{name:'已纠错',value:8}],
+        statusList:[{name:'无答案',value:1},{name:'未采纳答案',value:2},{name:'已采纳并公开',value:3},{name:'已采纳不公开',value:4},{name:'未采纳平分',value:5},{name:'未回答退回',value:6},{name:'数据异常',value:7},{name:'退款异常',value:8},{name:'已纠错',value:9}],
         tradeList:'',
         dataList: [],
         taxList:[],
-        delFlagList:[{name:'显示',value:'显示'},{name:'不显示',value:'不显示'}],
-        timeS:[],
+        delFlagList:[{name:'显示',value:'0'},{name:'隐藏',value:'1'}],
+
         prop:'',
         order:'',
         pageIndex: 1,
@@ -205,6 +208,7 @@
       //重置搜索条件
       resetForm(){
         this.dataForm={
+            timeS:[],
             uuid:'',
             thirdUserName:'',
             content:'',
@@ -213,9 +217,24 @@
             tax:'',
             status:'',
             delFlag:'',
-            begin:'',
+            start:'',
             end:''
           }
+      },
+      getStatus(key) {
+        let statusTxt = '';
+        switch (key) {
+          case 1:statusTxt = "无答案";break
+          case 2:statusTxt = "未采纳答案";break
+          case 3:statusTxt = "已采纳并公开";break
+          case 4:statusTxt = "已采纳不公开";break
+          case 5:statusTxt = "未采纳平分";break
+          case 6:statusTxt = "未回答退回";break
+          case 7:statusTxt = "数据异常";break
+          case 8:statusTxt = "退款异常";break
+          case 9:statusTxt = "已纠错";break
+        }
+        return statusTxt
       },
       //排序
       sortChange (column, prop, order){
@@ -232,17 +251,17 @@
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
-        if(this.timeS.length!=0){
-          this.dataForm.begin=this.timeS[0]
-          this.dataForm.end=this.timeS[1]
+        if(this.dataForm.timeS.length!=0){
+          this.dataForm.start=this.dataForm.timeS[0]
+          this.dataForm.end=this.dataForm.timeS[1]
         }
         this.$http({
           url: this.$http.adornUrl('/biz/question/companyQuestionList'),
           method: 'post',
           data: this.$http.adornData({
-            'page': String(this.pageIndex),
-            'limit': String(this.pageSize),
-            'uuid':this.dataForm.id || undefined,
+            'pageNum': String(this.pageIndex),
+            'pageSize': String(this.pageSize),
+            'uuid':this.dataForm.uuid || undefined,
             'thirdUserName':this.dataForm.thirdUserName || undefined,
             'content':this.dataForm.content || undefined,
             'phoneNum':this.dataForm.phoneNum || undefined,
@@ -250,12 +269,14 @@
             'tax':this.dataForm.tax || undefined,
             'delFlag':this.dataForm.delFlag || undefined,
             'status':this.dataForm.status || undefined,
+            'start':this.dataForm.start || undefined,
+            'end':this.dataForm.end || undefined,
             'prop':this.prop || undefined,
             'order':this.order || undefined
           })
         }).then(({data}) => {
           if (data && data.code == 200) {
-            this.dataList = data.data.list
+            this.dataList = data.data.data
             this.totalPage = data.data.totalCount
             this.tradeList=data.data.trades
             this.taxList=data.data.taxs

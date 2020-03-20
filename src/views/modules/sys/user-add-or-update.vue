@@ -60,14 +60,15 @@
         }
       }
       var validateEmail = (rule, value, callback) => {
-        if (!isEmail(value)) {
+        if (!isEmail(value)&&value!="") {
           callback(new Error('邮箱格式错误'))
         } else {
           callback()
         }
       }
       var validateMobile = (rule, value, callback) => {
-        if (!isMobile(value)) {
+
+        if (!isMobile(value)&&value!="") {
           callback(new Error('手机号格式错误'))
         } else {
           callback()
@@ -100,11 +101,9 @@
             { validator: validateComfirmPassword, trigger: 'blur' }
           ],
           email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
             { validator: validateEmail, trigger: 'blur' }
           ],
           mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' },
             { validator: validateMobile, trigger: 'blur' }
           ]
         }/*,

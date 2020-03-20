@@ -24,14 +24,21 @@
         </el-form-item>
         <el-form-item label="问题图片">
           <div v-for="(picList,index) in dataForm.picList" >
-            <el-image
-              style="width: 100px; height: 100px"
-              :src="url"
-              fit="scale-down"></el-image>
+            <el-popover
+              placement="right"
+              title=""
+              trigger="hover">
+              <!--正式-->
+              <img :src="'https://api.jieshuibao.com/showImg/question/'+picList.url" style="max-width:500px;max-height: 500px"/>
+              <img slot="reference" :src="'https://api.jieshuibao.com/showImg/question/'+picList.url" :alt="picList.url" style="max-height: 50px;max-width: 130px">
+              <!--测试-->
+              <!--<img :src="'http://test.jieshuibao.com//jsb_webserver/showImg/question/'+picList.url" style="max-width:500px;max-height: 500px"/>
+              <img slot="reference" :src="'http://test.jieshuibao.com//jsb_webserver/showImg/question/'+picList.url" :alt="picList.url" style="max-height: 50px;max-width: 130px">-->
+            </el-popover>
           </div>
         </el-form-item>
         <el-form-item label="显示状态">
-          <el-input v-model="dataForm.delFlag" :disabled="true" style="width:300px"></el-input>
+          <el-input :value="dataForm.delFlag==0?'显示':'隐藏'" :disabled="true" style="width:300px"></el-input>
         </el-form-item>
       </div>
       <div style="border: 1px solid #ccc;padding-left: 20px;margin-top: 20px">
@@ -46,51 +53,54 @@
             <el-table-column
               header-align="center"
               align="center"
-              width="180"
               label=" ">
               <template slot-scope="scope"><span>回答{{scope.$index+(pageIndex - 1) * pageSize + 1}} </span></template>
             </el-table-column>
             <el-table-column
-              prop="name"
+              prop="content"
               header-align="center"
               align="center"
               label="回答内容">
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="status"
               header-align="center"
               align="center"
               label="采纳状态">
+              <template slot-scope="scope"><span>{{getAnwStatus(scope.row.status)}} </span></template>
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="date"
               header-align="center"
               align="center"
+              :formatter="formatTime"
               label="回答日期">
             </el-table-column>
             <el-table-column
-            prop="time"
+            prop="counselorname"
             header-align="center"
             align="center"
             label="咨询师姓名">
           </el-table-column>
             <el-table-column
-              prop="time"
+              prop="phone"
               header-align="center"
               align="center"
               label="手机号">
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="delFlag"
               header-align="center"
               align="center"
               label="显示状态">
+              <template slot-scope="scope"><span>{{scope.row.delFlag==0?'显示':'隐藏'}} </span></template>
             </el-table-column>
             <el-table-column
-              prop="time"
+              prop="ancontent"
               header-align="center"
               align="center"
               label="被纠错">
+              <template slot-scope="scope"><span>{{scope.row.status==6?scope.row.ancontent:''}} </span></template>
             </el-table-column>
           </el-table>
         </el-form-item>
@@ -106,13 +116,20 @@
     inject:['removeTabHandle'],
     data(){
       return {
+        pageIndex:1,
+        pageSize:5,
         dataList:[],
         dataForm:{
           thirdUserName:'',
           statusName:'',
-          policyDate:'',
+          phoneNum:'',
+          trade:'',
+          tax:'',
+          date:'',
+          content:'',
+          delFlag:'',
           id:this.$route.query.id || undefined,
-          dataList:{}
+          picList:[]
         },
 
 
@@ -121,21 +138,68 @@
     mounted(){
       if( this.dataForm.id!=undefined){
         this.$http({
-          url: this.$http.adornUrl(`/biz/policypack/info/${this.dataForm.id}`),
+          url: this.$http.adornUrl(`/biz/question/getById/${this.dataForm.id}`),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
-          this.dataForm.title=data.data.title
-          this.dataForm.policyDate=data.data.policyDate
-          this.dataForm.statusName=data.data.statusName
-          this.dataList.push({name:'新增时间',time:this.commonDate.formatTime('','',data.data.createDate)},
-            {name:'上线时间',time:this.commonDate.clearTime(data.data.onlineTime)},
-            {name:'更新结束时间',time:this.commonDate.formatTime('','',data.data.updateFinishDate)},
-            {name:'辅导结束时间',time:this.commonDate.formatTime('','',data.data.finishDate)})
+          this.dataForm.thirdUserName=data.data.data.thirdUserName
+          this.dataForm.trade=data.data.data.trade
+          this.dataForm.phoneNum=data.data.data.phoneNum
+          this.dataForm.tax=data.data.data.tax
+          this.dataForm.status=this.getStatus(data.data.data.status)
+          this.dataForm.date=this.commonDate.formatTime("","",parseInt(data.data.data.date))
+          this.dataForm.content=data.data.data.content
+          this.dataForm.delFlag=data.data.data.delFlag
+          if(data.data.data.picList!=null){
+            if(data.data.data.picList.length!=0){
+              for(var i=0;i<data.data.data.picList.length;i++){
+                this.dataForm.picList.push({
+                  url:data.data.data.picList[i]
+                })
+              }
+            }
+          }
+          this.dataList=data.data.answers
+
+         /* this.dataForm.policyDate=data.data.policyDate
+          this.dataForm.statusName=data.data.statusName*/
+
         })
       }
     },
     methods:{
+      formatTime(row){
+        return this.commonDate.formatTime("","",parseInt(row.date))
+      },
+      getStatus(key) {
+        let statusTxt = '';
+        switch (key) {
+          case 1:statusTxt = "无答案";break
+          case 2:statusTxt = "未采纳答案";break
+          case 3:statusTxt = "已采纳并公开";break
+          case 4:statusTxt = "已采纳不公开";break
+          case 5:statusTxt = "未采纳平分";break
+          case 6:statusTxt = "未回答退回";break
+          case 7:statusTxt = "数据异常";break
+          case 8:statusTxt = "退款异常";break
+          case 9:statusTxt = "已纠错";break
+        }
+        return statusTxt
+      },
+      getAnwStatus(key) {
+        let statusTxt = '';
+        switch (key) {
+          case 0:statusTxt = "无答案";break
+          case 1:statusTxt = "未采纳";break
+          case 2:statusTxt = "已采纳";break
+          case 3:statusTxt = "被举报";break
+          case 4:statusTxt = "举报通过";break
+          case 5:statusTxt = "举报不通过";break
+          case 6:statusTxt = "已纠错";break
+          case 7:statusTxt = "无需纠错";break
+        }
+        return statusTxt
+      },
       closePage:function () {
         this.removeTabHandle(this.$store.state.common.mainTabsActiveName)
       }

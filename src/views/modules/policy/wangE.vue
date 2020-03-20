@@ -1,27 +1,22 @@
 <template>
-  <div :id="this.id" :index="this.index">
+  <!--<script :id="this.id" :index="this.index" class="ueditor-box" type="text/plain" style="width: 100%; height: 260px;"></script>-->
+ <div :id="this.id" :index="this.index">
 
   </div>
 </template>
 
 <script>
-  import Vue from 'vue'
-  import WangEditor from 'wangeditor';
+  /*import ueditor from 'ueditor'*/
+import Vue from 'vue'
+import WangEditor from 'wangeditor'
   export default {
-    /*props: {id:{
-        type: String,
-      },
-    index:{
-      type: Number,
-    },
-      editorContent1:{
-      type:Function
-      }
-    },*/
     props:['id','index','econtent','policy'],
     data(){
       return {
-        //content:''
+        ue: null,
+        ueId: this.id,
+        ueContent: '',
+        dialogVisible: false
       }
     },
     mounted(){
@@ -42,14 +37,55 @@
       editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
       editor.customConfig.uploadImgMaxLength = 5;
       editor.customConfig.uploadFileName = 'file';
+      editor.customConfig.pasteFilterStyle = false;
       editor.customConfig.uploadImgHooks = {
         customInsert: function (insertImg, result, editor) {
           var url ="http://"+result.url;
           insertImg(url);
         }
       };
+      editor.customConfig.pasteTextHandle = function (content) {
+        // content 即粘贴过来的内容（html 或 纯文本），可进行自定义处理然后返回
+        if (content == '' && !content) return ''
+        var str = content
+        str = str.replace(/<xml>[\s\S]*?<\/xml>/ig, '')
+        str = str.replace(/<style>[\s\S]*?<\/style>/ig, '')
+        str = str.replace(/<\/?[^>]*>/g, '')
+        str = str.replace(/[ | ]*\n/g, '\n')
+        str = str.replace(/&nbsp;/ig, '')
+        return str
+      }
       editor.create();
       editor.txt.html(this.econtent)
+
+     /* var that=this
+     /!*ueditor.delEditor = function (this.id) {
+            if (this.ue = instances[this.id]) {
+              this.ue.key && this.ue.destroy();
+              delete instances[this.id]
+            }
+          }*!/
+      this.ue = ueditor.getEditor(this.ueId, {
+        serverUrl: this.$http.adornUrl(`ue/uploadimage`),
+        zIndex: 1
+      })
+
+      UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+      UE.Editor.prototype.getActionUrl = function(action) {
+        if (action == 'uploadimage' || action == 'uploadscrawl' || action == 'uploadimage') {
+          return this.$http.adornUrl(`ue/uploadimage`);
+
+        } else {
+          return this._bkGetActionUrl.call(this, action);
+        }
+      }
+      this.ue.ready(() => {
+        that.ue.setContent(that.econtent)
+      })
+
+      this.ue.addListener("blur",function(){
+        that.$emit('func',that.policy,that.index,that.ue.getContent())
+      })*/
     }
   }
 </script>

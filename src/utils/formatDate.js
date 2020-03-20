@@ -18,7 +18,6 @@ var commonDate = {
     },
   formatTime:function(row, column,cellValue) {
         if(cellValue==null || cellValue=="") return "";
-
         let date= new Date(cellValue);
         let year=date.getFullYear();
 

@@ -1,7 +1,7 @@
 <template>
   <div class="mod-policy">
     <ul class="ul-tab-title">
-      <li @click="closePage();$router.push({ name: 'policy-report-expart',query:{id:dataForm.policyId} })">专家预测</li>
+      <li @click="closePage();$router.push({ name: 'policy-report-expert',query:{id:dataForm.policyId} })">专家预测</li>
       <li class="pack">参考意见</li>
     </ul>
     <h2 style="border-bottom: 1px solid #ccc;padding-bottom: 20px;margin-bottom: 50px">编辑</h2>
@@ -9,7 +9,7 @@
       <h3 style="line-height: 36px;padding-left: 10px">您的建议或意见参考</h3>
       <el-form-item prop="content">
         <template>
-          <div id="editor_report_idea" v-model="dataForm.opinion"></div>
+          <UEditor :key="'editor_report_idea'"  :id='"editor_report_idea"':val="dataForm.policyId" :index="0" :econtent="dataForm.opinion" :modelname="'report_idea'" @func="editorContent" ></UEditor>
         </template>
       </el-form-item>
       <el-form-item style="text-align: center;">
@@ -21,17 +21,18 @@
 </template>
 <script>
   import Vue from 'vue'
-  import WangEditor from 'wangeditor'
+  import UEditor from '@/components/ueditor/ueditor.vue'
   import ElFormItem from "element-ui/packages/form/src/form-item";
   export default {
     components: {
       ElFormItem,
+      UEditor
     },
     inject:['removeTabHandle'],
     data(){
       return {
         dataForm:{
-          policyId:this.$route.query.id || undefined,
+          policyId:parseInt(this.$route.query.id) || undefined,
           id:undefined,
           opinion:''
         },
@@ -39,31 +40,6 @@
       }
     },
     mounted(){
-      var that=this
-      this.editor = new WangEditor("#editor_report_idea");
-      this.editor.customConfig.uploadImgServer =  this.$http.adornUrl(`/sys/oss/upload?token=${this.$cookie.get('token')}`); //上传URL
-      this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
-      this.editor.customConfig.uploadImgMaxLength = 5;
-      this.editor.customConfig.uploadFileName = 'file';
-      this.editor.customConfig.uploadImgHooks = {
-        customInsert: function (insertImg, result, editor) {
-          // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
-          // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
-          // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-          // var url =result.url;
-          var url ="http://"+result.url;
-          insertImg(url);
-          // result 必须是一个 JSON 格式字符串！！！否则报错
-        }
-      };
-      this.editor.customConfig.onchange = function (html) {
-        // 监控变化，同步更新到 content
-        //html=html.replace(/\"/g,"'");
-        if(html=='<p><br></p>'){html=''}
-        that.dataForm.opinion=html
-      };
-      this.editor.create();
       if( this.dataForm.policyId!=undefined) {
         this.$http({
           url: this.$http.adornUrl(`/biz/report/info/${this.dataForm.policyId}`),
@@ -73,12 +49,15 @@
           if(data.code==200&&data.data!=null){
             this.dataForm.opinion=data.data.opinion
             this.dataForm.id=data.data.id
-            this.editor.txt.html(data.data.opinion)
           }
         })
       }
     },
     methods:{
+      //获取富文本内容
+      editorContent(modelname,index,content){
+        this.dataForm.opinion=content
+      },
       closePage:function () {
         this.removeTabHandle(this.$store.state.common.mainTabsActiveName)
       },

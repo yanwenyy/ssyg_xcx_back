@@ -5,7 +5,7 @@
         <span slot="label">逐条解读</span>-->
     <ul class="ul-tab-title">
       <li @click="closePage();$router.push({ name: 'policy-unscramble',query:{id:dataForm.policyId} })">逐条解读</li>
-      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend',query:{id:dataForm.policyId} })">深度解读</li>
+      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend',query:{id:dataForm.policyId} })">延伸解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-contrast',query:{id:dataForm.policyId} })">对比解读</li>
       <li class="pack">官方解读</li>
     </ul>
@@ -14,7 +14,7 @@
         <h2 style="background: #45c2b5;line-height: 36px;color:#fff;padding-left: 10px">内容</h2>
         <el-form-item prop="content">
           <template>
-            <div id="editor_official" v-model="dataForm.content"></div>
+            <UEditor :key="'official'"  :id='"official_editor"':index="0" :val="dataForm.policyId" :econtent="dataForm.content" :modelname="'official'" @func="editorContent" ></UEditor>
           </template>
         </el-form-item>
         <el-form-item style="text-align: center;">
@@ -22,20 +22,16 @@
           <el-button type="info" @click="closePage()">关闭</el-button>
         </el-form-item>
     </el-form>
-    <!-- </el-tab-pane>
-     <el-tab-pane label="深度解读" @click="$router.push({ name: 'policy-unscramble-extend'})"></el-tab-pane>
-     <el-tab-pane label="对比解读"></el-tab-pane>
-     <el-tab-pane label="官方解读"></el-tab-pane>
-   </el-tabs>-->
   </div>
 </template>
 <script>
   import Vue from 'vue'
-  import WangEditor from 'wangeditor'
+  import UEditor from '@/components/ueditor/ueditor.vue'
   import ElFormItem from "element-ui/packages/form/src/form-item";
   export default {
     components: {
       ElFormItem,
+      UEditor
     },
     inject:['removeTabHandle'],
     data(){
@@ -44,7 +40,7 @@
           token: this.$cookie.get('token')
         },
         dataForm:{
-          policyId:this.$route.query.id || undefined,
+          policyId:parseInt(this.$route.query.id) || undefined,
           id:undefined,
           content:'',
         },
@@ -52,31 +48,6 @@
       }
     },
     mounted(){
-      var that=this
-      this.editor = new WangEditor("#editor_official");
-      this.editor.customConfig.uploadImgServer =  this.$http.adornUrl(`/sys/oss/upload?token=${this.$cookie.get('token')}`); //上传URL
-      this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
-      this.editor.customConfig.uploadImgMaxLength = 5;
-      this.editor.customConfig.uploadFileName = 'file';
-      this.editor.customConfig.uploadImgHooks = {
-        customInsert: function (insertImg, result, editor) {
-          // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
-          // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
-          // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-          // var url =result.url;
-          var url ="http://"+result.url;
-          insertImg(url);
-          // result 必须是一个 JSON 格式字符串！！！否则报错
-        }
-      };
-      this.editor.customConfig.onchange = function (html) {
-        // 监控变化，同步更新到 content
-        //html=html.replace(/\"/g,"'");
-        if(html=='<p><br></p>'){html=''}
-        that.dataForm.content=html
-      };
-      this.editor.create();
       if( this.dataForm.policyId!=undefined) {
         this.$http({
           url: this.$http.adornUrl(`/biz/policyofficial/info/${this.dataForm.policyId}`),
@@ -86,12 +57,15 @@
           if(data.code==200&&data.data!=null){
             this.dataForm.content=data.data.content
             this.dataForm.id=data.data.id
-            this.editor.txt.html(data.data.content)
           }
         })
       }
     },
     methods:{
+      //获取富文本内容
+      editorContent(modelname,index,content){
+        this.dataForm.content=content
+      },
       closePage:function () {
         this.removeTabHandle(this.$store.state.common.mainTabsActiveName)
       },

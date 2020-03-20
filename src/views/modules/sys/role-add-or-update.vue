@@ -21,7 +21,9 @@
           :props="menuListTreeProps"
           node-key="menuId"
           ref="menuListTree"
+          :check-strictly="true"
           :default-expand-all="true"
+          @check="clickDeal"
           show-checkbox>
         </el-tree>
       </el-form-item>
@@ -54,10 +56,49 @@
             { required: true, message: '角色名称不能为空', trigger: 'blur' }
           ]
         },
-        tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
+       tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
       }
     },
     methods: {
+      updated () {
+        // 给多选树设置默认值
+        this.$refs.menuListTree.setCheckedKeys(this.checkedId)
+      },
+      clickDeal (currentObj, treeStatus) {
+        // 用于：父子节点严格互不关联时，父节点勾选变化时通知子节点同步变化，实现单向关联。
+        let selected = treeStatus.checkedKeys.indexOf(currentObj.menuId) // -1未选中
+        // 选中
+        if (selected !== -1) {
+          // 子节点只要被选中父节点就被选中
+          this.selectedParent(currentObj)
+          // 统一处理子节点为相同的勾选状态
+          this.uniteChildSame(currentObj, true)
+        } else {
+          // 未选中 处理子节点全部未选中
+          if (currentObj.children != undefined){
+            if (currentObj.children.length !== 0) {
+              this.uniteChildSame(currentObj, false)
+            }
+          }
+        }
+      },
+// 统一处理子节点为相同的勾选状态
+      uniteChildSame (treeList, isSelected) {
+        this.$refs.menuListTree.setChecked(treeList.menuId, isSelected)
+        if(treeList.children!=undefined){
+          for (let i = 0; i < treeList.children.length; i++) {
+              this.uniteChildSame(treeList.children[i], isSelected)
+          }
+        }
+      },
+// 统一处理父节点为选中
+      selectedParent (currentObj) {
+        let currentNode = this.$refs.menuListTree.getNode(currentObj)
+        if (currentNode.parent.key !== undefined) {
+          this.$refs.menuListTree.setChecked(currentNode.parent, true)
+          this.selectedParent(currentNode.parent)
+        }
+      },
       init (id) {
         this.dataForm.id = id || 0;
         this.$http({
@@ -83,11 +124,10 @@
                 this.dataForm.roleName = data.role.roleName;
                 this.dataForm.remark = data.role.remark;
                 var idx = data.role.menuIdList.indexOf(this.tempKey)
-               /* if (idx !== -1) {*/
+                if (idx !== -1) {
                   data.role.menuIdList.splice(idx, data.role.menuIdList.length - idx)
-                /*}*/
-                console.log(data.role.menuIdList)
-                this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
+                }
+                  this.$refs.menuListTree.setCheckedKeys(data.role.menuIdList)
               }
             })
           }

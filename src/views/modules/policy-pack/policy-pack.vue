@@ -157,8 +157,8 @@
           url: this.$http.adornUrl('/biz/policypack/list'),
           method: 'post',
           data: this.$http.adornData({
-            'currPage': String(this.pageIndex),
-            'pageSize': String(this.pageSize),
+            'page': String(this.pageIndex),
+            'limit': String(this.pageSize),
             'policyDate':this.dataForm.policyDate || undefined,
             'status':this.dataForm.status || undefined,
             'title':this.dataForm.title || undefined

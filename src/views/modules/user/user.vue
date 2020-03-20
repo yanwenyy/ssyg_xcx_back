@@ -29,9 +29,9 @@
         <el-form-item>
           <el-button  type="warning" @click="resetForm('dataForm')">重置</el-button>
         </el-form-item>
-        <el-form-item>
+        <!--<el-form-item>
           <el-button type="warning" @click="">导出</el-button>
-        </el-form-item>
+        </el-form-item>-->
       </div>
     </el-form>
     <el-table
@@ -59,11 +59,10 @@
         label="昵称">
       </el-table-column>
       <el-table-column
-        prop="province,city"
+        prop="city"
         header-align="center"
         align="center"
         label="地区">
-        <template slot-scope="scope"> {{scope.row.province}}  {{scope.row.city}} </template>
       </el-table-column>
       <el-table-column
         prop="joinCompany"
@@ -72,13 +71,13 @@
         :formatter="jionStatus"
         label="是否加入过企业">
       </el-table-column>
-      <el-table-column
+      <!--<el-table-column
         prop="ifTrial"
         header-align="center"
         align="center"
         :formatter="jionStatus"
         label="是否领取试用">
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         prop="createtime"
         header-align="center"

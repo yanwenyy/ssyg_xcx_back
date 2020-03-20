@@ -172,7 +172,7 @@
               url: this.$http.adornUrl(`/biz/banner/${!this.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'id': this.dataForm.id || undefined,
+                'id': this.id || undefined,
                 'imgUrl':this.dataForm.imgUrl,
                 'name':this.dataForm.name,
                 'showPlace':this.dataForm.showPlace,

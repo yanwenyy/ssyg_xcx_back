@@ -2,7 +2,7 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-button v-if="isAuth('biz:banner:save')" type="warning" @click="$router.push({ name: 'companyManage-add' })" >新增</el-button>
+        <el-button v-if="isAuth('biz:company:save')" type="warning" @click="$router.push({ name: 'companyManage-add' })" >新增</el-button>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.companyName" placeholder="企业名称" clearable></el-input>
@@ -98,9 +98,9 @@
         <el-form-item>
           <el-button  type="warning" @click="resetForm('dataForm')">重置</el-button>
         </el-form-item>
-        <el-form-item>
+        <!--<el-form-item>
           <el-button type="warning" @click="">导出</el-button>
-        </el-form-item>
+        </el-form-item>-->
       </div>
     </el-form>
     <el-table
@@ -164,6 +164,12 @@
         label="会员状态">
       </el-table-column>
       <el-table-column
+        prop="questionNum"
+        header-align="center"
+        align="center"
+        label="问答剩余量">
+      </el-table-column>
+      <el-table-column
         prop="coachEndTime"
         header-align="center"
         align="center"
@@ -194,6 +200,7 @@
         label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="$router.push({ name: 'company-account',query:{id:scope.row.uuid} })">账户管理</el-button>
+          <el-button type="text" size="small" @click="$router.push({ name: 'company-equity',query:{id:scope.row.uuid} })">权益管理</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.uuid)">编辑</el-button>
           <el-button type="text" size="small"  @click="$router.push({ name: 'companyManage-view',query:{id:scope.row.uuid} })">查看</el-button>
         </template>

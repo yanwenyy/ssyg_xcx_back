@@ -8,7 +8,7 @@
           placeholder="辅导月份" style="width: 150px">
           <el-option v-for="item in monthList"
                      :label="item.policyDateKey"
-                     :value="item.policyDateValue"
+                     :value="item.policyDateKey"
                      :key="item.policyDateValue">
           </el-option>
         </el-select>
@@ -72,7 +72,9 @@
         align="center"
         width="60"
         label="序号">
+        <template slot-scope="scope">{{totalPage-scope.$index-(pageIndex-1)*10}}</template>
       </el-table-column>
+
       <el-table-column
         prop="questionId"
         header-align="center"
@@ -234,7 +236,7 @@
             'companyId':this.dataForm.companyId || undefined,
             'questionTitle':this.dataForm.questionTitle || undefined,
             'rigwronStatus':this.dataForm.rigwronStatus || undefined,
-            'policyDate':this.dataForm.policyId || undefined
+            'policyDate':this.dataForm.policyDate || undefined
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

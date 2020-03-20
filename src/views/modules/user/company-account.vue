@@ -35,7 +35,7 @@
       </el-table>
       <div class="two-title">
         企业管理层
-        <el-button v-if="isAuth('biz:banner:save')" type="warning" @click="addOrUpdateHandle(0)" >+ 添加管理员</el-button>
+        <el-button v-if="isAuth('biz:user:save')" type="warning" @click="addOrUpdateHandle(0)" >+ 添加管理员</el-button>
       </div>
       <el-table
         :data="manageList"
@@ -100,7 +100,7 @@
       </el-table>
       <div class="two-title" v-if="manageList.length>0">
         企业员工层
-        <el-button v-if="isAuth('biz:banner:save')" type="warning" @click="addOrUpdateHandle(1)" >+ 添加员工</el-button>
+        <el-button v-if="isAuth('biz:user:save')" type="warning" @click="addOrUpdateHandle(1)" >+ 添加员工</el-button>
       </div>
       <el-table  v-if="manageList.length>0"
         :data="staffList"

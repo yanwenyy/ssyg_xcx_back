@@ -2,7 +2,7 @@
   <div class="mod-policy">
     <ul class="ul-tab-title">
       <li @click="closePage();$router.push({ name: 'policy-unscramble-view',query:{id:dataForm.policyId} })">逐条解读</li>
-      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend-view',query:{id:dataForm.policyId} })">深度解读</li>
+      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend-view',query:{id:dataForm.policyId} })">延伸解读</li>
       <li class="pack">对比解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-official-view',query:{id:dataForm.policyId} })">官方解读</li>
     </ul>
@@ -62,7 +62,7 @@
     mounted(){
       if( this.dataForm.policyId!=undefined) {
         this.$http({
-          url: this.$http.adornUrl(`/biz/policydepth/info/extend/${this.dataForm.policyId}`),
+          url: this.$http.adornUrl(`/biz/policydepth/info/compare/${this.dataForm.policyId}`),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {

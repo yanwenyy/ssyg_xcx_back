@@ -141,13 +141,14 @@
           companyid:'',
           companyname:'',
           online:'',
+          phone:'',
           nickname:'',
           begin:'',
           end:''
         },
         timeS:[],
         makeupdateList:[],
-        onlineList:[{name:'微信',value:0},{name:'线下',value:1}],
+        onlineList:[{name:'微信',value:"0"},{name:'线下',value:"1"}],
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -167,12 +168,11 @@
         data: this.$http.adornData()
       }).then(({data}) => {
         for(var i=0;i<data.data.length;i++){
-          for(var key in data.data[i]){
-            this.makeupdateList.push({
-              'name':key,
-              'value':key
-            })
-          }
+          console.log(data.data[i])
+          this.makeupdateList.push({
+            'name':data.data[i],
+            'value':data.data[i]
+          })
         }
 
       })
@@ -196,10 +196,13 @@
             'companyid':this.dataForm.companyid || undefined,
             'companyname':this.dataForm.companyname || undefined,
             'online':this.dataForm.online || undefined,
+            'phone':this.dataForm.phone || undefined,
             'nickname':this.dataForm.nickname || undefined,
             'begin':this.dataForm.begin || undefined,
             'end':this.dataForm.end || undefined,
-            'makeupdate':this.dataForm.makeupdate || undefined
+            'makeupdate':this.dataForm.makeupdate || undefined,
+            'prop':'paysuctime',
+            'order':'desc'
           })
         }).then(({data}) => {
           if (data && data.code == 200) {

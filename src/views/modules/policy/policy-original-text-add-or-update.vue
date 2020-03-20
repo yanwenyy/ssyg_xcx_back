@@ -59,6 +59,7 @@
         <el-select
           v-model="dataForm.pubMin"
           clearable
+          :disabled="delFlagShow"
           placeholder="适用范围" style="width: 220px" @change="getpubMin($event)">
           <el-option v-for="item in pubMinList"
                      :label="item.label"
@@ -74,6 +75,7 @@
           :multiple-limit="2"
           :required="isRequired"
           clearable
+          :disabled="delFlagShow"
           placeholder="请选择行业" style="width: 220px">
           <el-option v-for="item in tradeList"
                      :label="item.tradeName"
@@ -101,7 +103,8 @@
       </el-form-item>
       <el-form-item label="政策原文" prop="content">
         <template>
-          <div v-model="dataForm.content" id="editor"></div>
+         <!-- <div v-model="dataForm.content" id="editor"></div>-->
+          <UEditor :id="'original'" :index="0" :econtent=dataForm.content  :modelname="'orginal'" :val="dataForm.id" @func="editorContent" ></UEditor>
         </template>
       </el-form-item>
       <el-form-item style="text-align: center;">
@@ -112,10 +115,10 @@
   </div>
 </template>
 <script>
-  import Vue from 'vue'
-  import WangEditor from 'wangeditor'
+  import UEditor from '@/components/ueditor/ueditor.vue'
 export default {
   inject:['removeTabHandle'],
+  components: {UEditor},
   data(){
     let validateTrade = (rule, value, callback) => {
       // 当跳转链接为空值且为必填时，抛出错误，反之通过校验
@@ -126,6 +129,7 @@ export default {
       }
     };
     return {
+      delFlagShow:false,
       headers: {
         token: this.$cookie.get('token')
       },
@@ -139,7 +143,7 @@ export default {
       tradeList:[],
       fileList:[],
       dataForm:{
-        id:this.$route.query.id || undefined,
+        id:parseInt(this.$route.query.id) || undefined,
         title:'',
         policyPackDate:'',
         officialReleaseDate:'',
@@ -191,6 +195,9 @@ export default {
       }).then(({data}) => {
         this.titleTxt="编辑"
         this.addHide=true
+        if(data.data.delFlag==0){
+          this.delFlagShow=true
+        }
         this.dataForm.policyPackDate = data.data.policyPackDate+'-02'
         this.dataForm.title = data.data.title
         this.dataForm.officialReleaseDate = this.commonDate.formatDate('', '', data.data.officialReleaseDate)
@@ -211,7 +218,6 @@ export default {
           this.dataForm.tags = data.data.tags.substr(1);
           this.dataForm.tags = this.dataForm.tags.substring(0,this.dataForm.tags.length-1)
         }
-        this.editor.txt.html(data.data.content)
         this.dataForm.content=data.data.content
         if (data.data.annexs.length != 0) {
           for (var i = 0; i < data.data.annexs.length; i++) {
@@ -259,31 +265,6 @@ export default {
       }
       this.tradeList = dataList
     })
-    var that=this
-    this.editor = new WangEditor("#editor");
-    this.editor.customConfig.uploadImgServer =  this.$http.adornUrl(`/sys/oss/upload?token=${this.$cookie.get('token')}`); //上传URL
-    this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
-    this.editor.customConfig.uploadImgMaxLength = 5;
-    this.editor.customConfig.uploadFileName = 'file';
-    this.editor.customConfig.uploadImgHooks = {
-      customInsert: function (insertImg, result, editor) {
-        // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
-        // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
-        // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-        // var url =result.url;
-        var url ="http://"+result.url;
-        insertImg(url);
-        // result 必须是一个 JSON 格式字符串！！！否则报错
-      }
-    };
-    this.editor.customConfig.onchange = function (html) {
-      // 监控变化，同步更新到 content
-      //html=html.replace(/\"/g,"'");
-      if(html=='<p><br></p>'){html=''}
-      that.dataForm.content=html
-    };
-    this.editor.create();
   },
   computed: {
     isRequired: function() {
@@ -291,6 +272,10 @@ export default {
     }
   },
   methods:{
+    //获取富文本内容
+    editorContent(modelname,index,content){
+      this.dataForm.content=content
+    },
     closePage:function () {
       this.removeTabHandle(this.$store.state.common.mainTabsActiveName)
     },

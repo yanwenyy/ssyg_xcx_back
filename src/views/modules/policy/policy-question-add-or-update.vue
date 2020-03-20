@@ -45,11 +45,6 @@
         <el-button type="info" @click="closePage()">关闭</el-button>
       </el-form-item>
     </el-form>
-    <!--</el-tab-pane>
-    <el-tab-pane label="深度解读" @click="$router.push({ name: 'policy-unscramble-extend'})"></el-tab-pane>
-    <el-tab-pane label="对比解读"></el-tab-pane>
-    <el-tab-pane label="官方解读"></el-tab-pane>
-  </el-tabs>-->
   </div>
 </template>
 <script>

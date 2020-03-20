@@ -87,9 +87,9 @@
         <el-form-item>
           <el-button  type="warning" @click="resetForm('dataForm')">重置</el-button>
         </el-form-item>
-        <el-form-item>
+        <!--<el-form-item>
           <el-button type="warning" @click="">导出</el-button>
-        </el-form-item>
+        </el-form-item>-->
       </div>
     </el-form>
     <el-table
@@ -146,7 +146,7 @@
         header-align="center"
         align="center"
         label="地区">
-        <template slot-scope="scope"> {{scope.row.province}}  {{scope.row.city}} </template>
+        <template slot-scope="scope"> {{scope.row.province}} {{ scope.row.city!='null'?scope.row.city:''}}</template>
       </el-table-column>
       <el-table-column
         prop="trade"

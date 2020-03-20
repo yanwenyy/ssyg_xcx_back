@@ -16,7 +16,7 @@
         <el-input v-model="dataForm.phone" :disabled="true" placeholder="手机号"></el-input>
       </el-form-item>
       <el-form-item label="地区">
-        <el-input v-model="address" :disabled="true" placeholder="地区"></el-input>
+        <el-input v-model="address" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="行业">
         <el-input v-model="dataForm.tradeName" :disabled="true" placeholder="行业"></el-input>
@@ -54,7 +54,7 @@
       <el-form-item label="会员状态">
         <el-input v-model="dataForm.vipStatus" :disabled="true" placeholder="会员状态"></el-input>
       </el-form-item>
-      <el-form-item label="会员时间">
+      <el-form-item label="会员时间" v-if="dataForm.vipStatus!='未开通'">
         <el-date-picker
           v-model="dataForm.vaildstarttime"
           type="date"
@@ -69,7 +69,7 @@
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="会员辅导周期">
+      <el-form-item label="会员辅导周期"  v-if="dataForm.vipStatus!='未开通'">
         <el-date-picker
           v-model="dataForm.coachstarttime"
           type="date"
@@ -121,7 +121,7 @@
           if (data && data.code == 200) {
             var datas=data.data;
             this.dataForm = datas;
-            if(this.dataForm.province!=null){
+            if(this.dataForm.province!=null&&this.dataForm.province!="null"){
               this.address=this.dataForm.province+this.dataForm.city
             }
           }

@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.uuid" placeholder="企业ID" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.companyname" placeholder="企业名称" clearable></el-input>
+        <el-input v-model="dataForm.companyName" placeholder="企业名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-select
@@ -98,7 +98,7 @@
         dataForm: {
           uuid:'',
           vipStatus:'',
-          companyname:''
+          companyName:''
         },
         vipStatusList:[{name:'有效',value:'有效'},{name:'过期',value:'过期'}],
         dataList: [],
@@ -144,8 +144,8 @@
           data: this.$http.adornData({
             'page': String(this.pageIndex),
             'limit': String(this.pageSize),
-            'uuid':this.dataForm.id || undefined,
-            'companyname':this.dataForm.companyname || undefined,
+            'uuid':this.dataForm.uuid || undefined,
+            'companyName':this.dataForm.companyName || undefined,
             'vipStatus':this.dataForm.vipStatus || undefined,
             'prop':this.prop || undefined,
             'order':this.order || undefined

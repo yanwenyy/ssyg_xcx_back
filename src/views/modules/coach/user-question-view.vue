@@ -45,6 +45,7 @@
           </el-form-item>
           <el-form-item label=" "style="margin-top: 20px;margin-bottom: 20px">
             <el-radio-group v-model="dataForm.quAnswers[index].status"><el-radio :label="1" :disabled="true" @change="getStatus(index)">正确答案</el-radio></el-radio-group>
+            <el-radio-group v-if="ansId(dataForm.quAnswers[index].id)" style="margin-left: 30px"><el-radio :disabled="true" :checked="true">用户答案</el-radio></el-radio-group>
           </el-form-item>
         </div>
       </el-form-item>
@@ -75,6 +76,7 @@
         headers: {
           token: this.$cookie.get('token')
         },
+        ansIdArr:'',
         dataForm:{
           phone:'',
           realName:'',
@@ -104,6 +106,8 @@
           params: this.$http.adornParams()
         }).then(({data}) => {
           this.disabledS=true
+          this.ansIdArr=data.data.ansId.substring(0,data.data.ansId.length-1)
+          this.ansIdArr=this.ansIdArr.slice(1).split(",")
           this.dataForm.policyTitle=data.data.policyTitle
           this.dataForm.phone=data.data.phone
           this.dataForm.realName=data.data.realName
@@ -124,6 +128,14 @@
       }
     },
     methods:{
+      //用户选择
+      ansId(id){
+        for(var i=0;i<this.ansIdArr.length;i++){
+          if(id==this.ansIdArr[i]){
+            return true
+          }
+        }
+      },
       getStatus(val){
         for(var i=0;i<this.dataForm.answerList.length;i++){
           if(i!=val){

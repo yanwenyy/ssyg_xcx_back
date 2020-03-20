@@ -20,7 +20,7 @@
         <el-input v-model="dataForm.tradeName" :disabled="true" placeholder="行业"></el-input>
       </el-form-item>
       <el-form-item label="地区">
-        <el-input v-model="dataForm.province+dataForm.city" :disabled="true" placeholder="地区"></el-input>
+        <el-input v-model="city" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="注册时间">
         <el-date-picker
@@ -30,43 +30,6 @@
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <div class="two-title">企业权益</div>
-      <el-form-item label="会员状态">
-        <el-input v-model="dataForm.vipStatus" :disabled="true" placeholder="会员状态"></el-input>
-      </el-form-item>
-      <el-form-item label="会员时间">
-        <el-date-picker
-          v-model="dataForm.vipStartDate"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-        <span class="date-line">--</span>
-        <el-date-picker
-          v-model="dataForm.vaildLastTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="会员辅导周期">
-        <el-date-picker
-          v-model="dataForm.coachStartTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-        <span class="date-line">--</span>
-        <el-date-picker
-          v-model="dataForm.coachEndTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="付款金额">
-        <el-input v-model="dataForm.amount" :disabled="true" placeholder="付款金额"></el-input>
-      </el-form-item>
       <div class="two-title">企业人员</div>
       <el-table
         :data="dataList"
@@ -74,10 +37,10 @@
         v-loading="dataListLoading"
         style="width: 100%;margin-bottom: 30px">
         <el-table-column
-          type="index"
           header-align="center"
           align="center"
           label="序号">
+          <template slot-scope="scope">{{totalPage-scope.$index}}</template>
         </el-table-column>
 
         <el-table-column
@@ -132,6 +95,60 @@
           label="加入企业时间">
         </el-table-column>
       </el-table>
+      <div class="two-title">企业权益</div>
+      <el-table
+        :data="dataList1"
+        border
+        style="width: 100%;margin-bottom: 30px">
+        <el-table-column
+          header-align="center"
+          align="center"
+          label="序号">
+          <template slot-scope="scope">{{totalPage1-scope.$index}}</template>
+        </el-table-column>
+        <el-table-column
+          prop="goodsName"
+          header-align="center"
+          align="center"
+          label="商品名称">
+        </el-table-column>
+        <el-table-column
+          prop="purview"
+          header-align="center"
+          align="center"
+          label="权限">
+        </el-table-column>
+        <el-table-column
+          prop="vipStatus"
+          header-align="center"
+          align="center"
+          label="会员状态">
+        </el-table-column>
+        <el-table-column
+          prop="vaildstarttime"
+          header-align="center"
+          align="center"
+          label="开通时间">
+        </el-table-column>
+        <el-table-column
+          prop="vaildlasttime"
+          header-align="center"
+          align="center"
+          label="截止日期">
+        </el-table-column>
+        <el-table-column
+          prop="coachendtime"
+          header-align="center"
+          align="center"
+          label="会员辅导周期">
+        </el-table-column>
+        <el-table-column
+          prop="sum"
+          header-align="center"
+          align="center"
+          label="付款金额">
+        </el-table-column>
+      </el-table>
       <el-form-item style="text-align: center;">
         <el-button type="info" @click="closePage()">关闭</el-button>
       </el-form-item>
@@ -151,25 +168,18 @@
         }
       };
       return {
-        imageUrl: '',
         id:this.$route.query.id,
-        showPos:[
-          {value:1, label:'首页'},
-          {value:2, label:'评估页'},
-        ],
-        jumpLink:[
-          {value:1, label:'不跳转'},
-          {value:2, label:'H5'},
-        ],
         dataForm:{
 
         },
+        city:'',
         dataList: [],
+        dataList1: [],
         pageIndex: 1,
         pageSize: 30,
         totalPage: 0,
+        totalPage1:0,
         dataListLoading: false,
-        dataListSelections: [],
         addOrUpdateVisible: false,
       }
     },
@@ -183,6 +193,13 @@
           if (data && data.code == 200) {
             var datas=data.data;
             this.dataForm = datas;
+            if(datas.province==null){
+              this.city=""
+            }else if(datas.province!=null&&datas.city!=null){
+              this.city=datas.province+datas.city
+            }else{
+              this.city=datas.province
+            }
           }
         });
         this.getDataList();
@@ -212,6 +229,21 @@
             this.totalPage = 0
           }
           this.dataListLoading = false
+        })
+        this.$http({
+          url: this.$http.adornUrl('/biz/orderdetail/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'companyId': this.id
+          })
+        }).then(({data}) => {
+          if (data && data.code == 200) {
+            this.dataList1 = data.data
+            this.totalPage1 = data.data.length
+          } else {
+            this.dataList1 = []
+            this.totalPage1 = 0
+          }
         })
       },
     }

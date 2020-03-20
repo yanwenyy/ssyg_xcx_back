@@ -5,7 +5,7 @@
         <span slot="label">逐条解读</span>-->
     <ul class="ul-tab-title">
       <li @click="closePage();$router.push({ name: 'policy-unscramble',query:{id:dataForm.policyId} })">逐条解读</li>
-      <li class="pack" >深度解读</li>
+      <li class="pack" >延伸解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-contrast',query:{id:dataForm.policyId} })">对比解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-official',query:{id:dataForm.policyId} })">官方解读</li>
     </ul>
@@ -20,11 +20,11 @@
               </template>
             </el-form-item>
             <el-form-item label="内容" :prop="'content'+index">
-              <wang-e :key="'extend_'+index+timer" :id='"extend_editor"+index' :index="index" :policy="'content'" @func="editorContent" :econtent="dataForm.listParts[index].content"></wang-e>
+              <UEditor :key="'extend_'+index+timer"  :id='"extend_editor"+index':index="index" :econtent="dataForm.listParts[index].content" :modelname="'content'" @func="editorContent" ></UEditor>
             </el-form-item>
             <el-form-item label="相关政策">
               <div v-for="(relativePolicys, policysIndex) in dataForm.listParts[index].relativePolicys">
-                <el-button type="danger" plain style="float: right;margin-right: 5px;z-index: 1;position: relative;" @click="removePolicys(index,relativePolicys,dataForm.listParts[index].relativePolicys[policysIndex].id)">x 删除模块</el-button>
+                <el-button type="danger" plain style="float: right;margin-right: 5px;z-index: 1;position: relative;" @click="removePolicys(index,relativePolicys,dataForm.listParts[index].relativePolicys[policysIndex].policyDepthId,dataForm.listParts[index].relativePolicys[policysIndex].policyId)">x 删除模块</el-button>
                 <el-input style="width:220px;padding-left: 20px" v-model="dataForm.listParts[index].relativePolicys[policysIndex].jId"></el-input>
                 <el-button type="primary" @click="policySearch(index,policysIndex)">搜索</el-button>
                 <div style="background: #eee;padding: 5px 0;margin-bottom: 10px ;margin-top: 10px">
@@ -42,24 +42,18 @@
             <el-button type="info" @click="closePage()">关闭</el-button>
           </el-form-item>
         </el-form>
-      <!--</el-tab-pane>
-      <el-tab-pane label="深度解读" @click="$router.push({ name: 'policy-unscramble-extend'})"></el-tab-pane>
-      <el-tab-pane label="对比解读"></el-tab-pane>
-      <el-tab-pane label="官方解读"></el-tab-pane>
-    </el-tabs>-->
   </div>
 </template>
 <script>
   import Vue from 'vue'
-  import WangEditor from 'wangeditor'
-  import wangE1 from './wangE'
+  import UEditor from '@/components/ueditor/ueditor.vue'
   import ElFormItem from "element-ui/packages/form/src/form-item";
   import ElButton from "element-ui/packages/button/src/button";
   export default {
     components: {
       ElButton,
       ElFormItem,
-      'wang-e':wangE1
+      UEditor
     },
     inject:['removeTabHandle'],
     data(){
@@ -188,7 +182,7 @@
         });
       },
       //删除相关政策
-      removePolicys:function(partIndex,item,id){
+      removePolicys:function(partIndex,item,id,policyId){
         var index = this.dataForm.listParts[partIndex].relativePolicys.indexOf(item)
         if (index !== -1) {
           var selId=this.dataForm.listParts[partIndex].relativePolicys[index].policyId
@@ -203,8 +197,8 @@
                 url: this.$http.adornUrl(`/biz/policydepthrelative/delete`),
                 method: 'POST',
                 data: this.$http.adornData({
-                  'id':id,
-                  "policyId":this.dataForm.policyId
+                  'policyDepthId':id,
+                  "relativePolicyId":policyId
                 })
               }).then(({data}) => {
                 if (data && data.code == 200) {

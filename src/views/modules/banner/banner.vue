@@ -27,6 +27,8 @@
         <template slot-scope="scope">
           <span v-if="scope.row.showPlace==1">首页</span>
           <span v-if="scope.row.showPlace==2">评估页</span>
+          <span v-if="scope.row.showPlace==3">我的报告-个人/员工</span>
+          <span v-if="scope.row.showPlace==4">我的报告-管理层</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -43,12 +45,12 @@
         label="图片">
         <template slot-scope="scope">
           <el-popover
-            placement="right"
-            title=""
-            trigger="hover">
-            <img :src="'http://'+scope.row.imgUrl"/>
-            <img slot="reference" :src="'http://'+scope.row.imgUrl" :alt="scope.row.imgUrl" style="max-height: 50px;max-width: 130px">
-          </el-popover>
+          placement="right"
+          title=""
+          trigger="hover">
+          <img :src="'http://'+scope.row.imgUrl"/>
+          <img slot="reference" :src="'http://'+scope.row.imgUrl" :alt="scope.row.imgUrl" style="max-height: 50px;max-width: 130px">
+        </el-popover>
         </template>
       </el-table-column>
       <el-table-column

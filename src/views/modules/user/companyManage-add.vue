@@ -34,40 +34,6 @@
       <el-form-item label="地区">
         <v-distpicker hide-area :province="dataForm.province" :city="dataForm.city" @selected="onSelected"></v-distpicker>
       </el-form-item>
-      <div class="two-title">企业权益</div>
-      <el-form-item label="会员时间">
-        <el-date-picker
-          v-model="dataForm.vipStartDate"
-          type="date"
-          @change="vipStart"
-          placeholder="选择日期">
-        </el-date-picker>
-        <span class="date-line">--</span>
-        <el-date-picker
-          v-model="dataForm.vaildLastTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="会员辅导周期">
-        <el-date-picker
-          v-model="dataForm.coachStartTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-        <span class="date-line">--</span>
-        <el-date-picker
-          v-model="dataForm.coachEndTime"
-          type="date"
-          :disabled="true"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="付款金额">
-        <el-input v-model="dataForm.amount"   placeholder="付款金额"></el-input>
-      </el-form-item>
       <el-form-item style="text-align: center;">
         <el-button @click="visible = false">取消</el-button>
         <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
@@ -80,27 +46,9 @@
   export default {
     inject:['removeTabHandle'],
     data(){
-      let validateJumpUrl = (rule, value, callback) => {
-        // 当跳转链接为空值且为必填时，抛出错误，反之通过校验
-        if (this.dataForm.jumpUrl === "" && this.isHaveTo) {
-          callback(new Error("请输入跳转链接"));
-        } else {
-          callback();
-        }
-      };
       return {
-        imageUrl: '',
         id:this.$route.query.id,
-        showPos:[
-          {value:1, label:'首页'},
-          {value:2, label:'评估页'},
-        ],
-        jumpLink:[
-          {value:1, label:'不跳转'},
-          {value:2, label:'H5'},
-        ],
         dataForm:{
-          amount: 0,
           city: "",
           coachEndTime: "",
           coachStartTime: "",
@@ -109,8 +57,6 @@
           companyscale: "",
           province: "",
           trade: [],
-          vaildLastTime: "",
-          vipStartDate: "",
         },
         dataRule:{
           companyname: [
@@ -149,13 +95,11 @@
               url: this.$http.adornUrl(`/biz/company/save`),
               method: 'post',
               data: this.$http.adornData({
-                'amount': this.dataForm.amount,
                 'city': this.dataForm.city,
                 'companyname': this.dataForm.companyname,
                 'companynature': this.dataForm.companynature,
                 'companyscale': this.dataForm.companyscale,
                 'province': this.dataForm.province,
-                'vipStartDate': this.dataForm.vipStartDate,
                 'trade': ","+this.dataForm.trade.join(",")+",",
               })
             }).then(({data}) => {
@@ -219,25 +163,6 @@
         })
       },
 
-      //会员时间变化的时候
-      vipStart(e){
-        var date=e.toLocaleDateString();
-        date=date.split("/").join("-");
-        this.$http({
-          url: this.$http.adornUrl('/biz/company/calculate'),
-          method: 'get',
-          params: this.$http.adornParams({
-            'vipStart':date,
-          })
-        }).then(({data}) => {
-          console.log(data.data);
-          if (data && data.code == 200) {
-            this.dataForm.vaildLastTime=this.commonDate.formatDate('', '', data.data.vipEnd);
-            this.dataForm.coachStartTime=this.commonDate.formatDate('', '', data.data.coachStart);
-            this.dataForm.coachEndTime=this.commonDate.formatDate('', '', data.data.coachEnd);
-          }
-        })
-      }
     }
   }
 </script>

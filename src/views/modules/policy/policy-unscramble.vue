@@ -5,7 +5,7 @@
         <span slot="label">逐条解读</span>-->
     <ul class="ul-tab-title">
       <li class="pack">逐条解读</li>
-      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend',query:{id:dataForm.policyId} })">深度解读</li>
+      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend',query:{id:dataForm.policyId} })">延伸解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-contrast',query:{id:dataForm.policyId} })">对比解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-official',query:{id:dataForm.policyId} })">官方解读</li>
     </ul>
@@ -20,10 +20,10 @@
               </template>
             </el-form-item>
             <el-form-item label="政策原文" :prop="'content'+index">
-              <wang-e :key="index+timer" :id='"editor"+index' :index="index" :policy="'content'" @func="editorContent" :econtent="dataForm.listParts[index].expertPart.partContent"></wang-e>
+              <UEditor :key="index+timer" :id='"editor"+index':index="index" :econtent="dataForm.listParts[index].expertPart.partContent" :modelname="'content'" @func="editorContents" ></UEditor>
             </el-form-item>
-            <el-form-item label="解析" :prop="'resolve'+index">
-              <wang-e :key="'resolve_'+index+timer" :id='"resolve_editor"+index' :policy="'resolve'" :index="index"  @func="editorContent" :econtent="dataForm.listParts[index].expertPart.resolve"></wang-e>
+            <el-form-item label="解读" :prop="'resolve'+index">
+              <UEditor :key="'resolve_'+index+timer" :index="index" :id='"resolve_editor"+index' :econtent="dataForm.listParts[index].expertPart.resolve" :modelname="'resolve'" @func="editorContents" ></UEditor>
             </el-form-item>
             <el-form-item label="音频">
               <div v-for="(expertPartVoices, voiceIndex) in dataForm.listParts[index].expertPartVoices" style="background: #eee;padding: 5px 0;margin-bottom: 10px ">
@@ -52,7 +52,7 @@
             <h2 style="background: #45c2b5;line-height: 36px;color:#fff;padding-left: 10px">政策背景</h2>
             <el-form-item prop="content">
               <template>
-                <div id="editor" v-model="dataForm.content"></div>
+                <UEditor :id="'policyBack'" :index="0"  :modelname="'policyBack'" :val="dataForm.policyId" @func="editorContent"></UEditor>
               </template>
             </el-form-item>
             <el-form-item style="text-align: center;">
@@ -62,25 +62,19 @@
           </div>
 
         </el-form>
-     <!-- </el-tab-pane>
-      <el-tab-pane label="深度解读" @click="$router.push({ name: 'policy-unscramble-extend'})"></el-tab-pane>
-      <el-tab-pane label="对比解读"></el-tab-pane>
-      <el-tab-pane label="官方解读"></el-tab-pane>
-    </el-tabs>-->
     <upload-cover v-if="uploadCoverVisible" ref="uploadCoverRef" @refreshData="getReld"></upload-cover>
   </div>
 </template>
 <script>
   import Vue from 'vue'
-  import WangEditor from 'wangeditor'
-  import wangE1 from './wangE'
+  import UEditor from '@/components/ueditor/ueditor.vue'
   import uploadCover from './upload-cover'
   import ElFormItem from "element-ui/packages/form/src/form-item";
   export default {
     components: {
       ElFormItem,
       uploadCover,
-      'wang-e':wangE1
+      UEditor
     },
       inject:['removeTabHandle'],
     data(){
@@ -94,8 +88,8 @@
         imageUrl:'',
         reld:'',
         dataForm:{
-          policyId:this.$route.query.id || undefined,
-          id:'',
+          policyId:parseInt(this.$route.query.id) ,
+          id:undefined,
           content:'',
           listParts: [],
         },
@@ -103,47 +97,36 @@
       }
     },
     mounted(){
-      var that=this
-      this.editor = new WangEditor("#editor");
-      this.editor.customConfig.uploadImgServer =  this.$http.adornUrl(`/sys/oss/upload?token=${this.$cookie.get('token')}`); //上传URL
-      this.editor.customConfig.uploadImgMaxSize = 3 * 1024 * 1024;
-      this.editor.customConfig.uploadImgMaxLength = 5;
-      this.editor.customConfig.uploadFileName = 'file';
-      this.editor.customConfig.uploadImgHooks = {
-        customInsert: function (insertImg, result, editor) {
-          // 图片上传并返回结果，自定义插入图片的事件（而不是编辑器自动插入图片！！！）
-          // insertImg 是插入图片的函数，editor 是编辑器对象，result 是服务器端返回的结果
-
-          // 举例：假如上传图片成功后，服务器端返回的是 {url:'....'} 这种格式，即可这样插入图片：
-          // var url =result.url;
-          var url ="http://"+result.url;
-          insertImg(url);
-          // result 必须是一个 JSON 格式字符串！！！否则报错
-        }
-      };
-      this.editor.customConfig.onchange = function (html) {
-        // 监控变化，同步更新到 content
-        //html=html.replace(/\"/g,"'");
-        if(html=='<p><br></p>'){html=''}
-        that.dataForm.content=html
-      };
-      this.editor.create();
+     /*if(location.href.indexOf("#reloaded")==-1){
+        location.href=location.href+"#reloaded";
+        location.reload();
+      }*/
       if( this.dataForm.policyId!=undefined) {
         this.$http({
           url: this.$http.adornUrl(`/biz/policyexpert/info/${this.dataForm.policyId}`),
           method: 'get',
           params: this.$http.adornParams()
         }).then(({data}) => {
+          if(data.data.policyId==null||data.data.policyId==0){
+            data.data.policyId=this.dataForm.policyId
+          }
+          if(data.data.id==0){
+            data.data.id=undefined
+          }
           this.dataForm=data.data
-          this.editor.txt.html(data.data.content)
-          this.dataForm.policyId=this.$route.query.id
+          this.dataForm.content=data.data.content
           if(this.dataForm.listParts==null||this.dataForm.listParts==undefined){
             this.dataForm.listParts=[]
           }
         })
       }
+
     },
     methods:{
+      //获取富文本内容
+      editorContent(modelname,index,content){
+        this.dataForm.content=content
+      },
       uploadCover () {
         this.uploadCoverVisible = true
         this.$nextTick(() => {
@@ -157,7 +140,8 @@
         this.timer=new Date().getTime()
       },
       //push对应富文本内容
-      editorContent:function(policy,partIndex,content){
+      editorContents:function(policy,partIndex,content){
+        console.log(this.dataForm.listParts)
         if(policy=='content'){
           this.dataForm.listParts[partIndex].expertPart.partContent=content
         }else if(policy=='resolve'){

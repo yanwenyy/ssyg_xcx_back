@@ -5,7 +5,7 @@
         <span slot="label">逐条解读</span>-->
     <ul class="ul-tab-title">
       <li class="pack">逐条解读</li>
-      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend-view',query:{id:dataForm.policyId} })">深度解读</li>
+      <li @click="closePage();$router.push({ name: 'policy-unscramble-extend-view',query:{id:dataForm.policyId} })">延伸解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-contrast-view',query:{id:dataForm.policyId} })">对比解读</li>
       <li @click="closePage();$router.push({ name: 'policy-unscramble-official-view',query:{id:dataForm.policyId} })">官方解读</li>
     </ul>
@@ -20,7 +20,7 @@
         <el-form-item label="政策原文" :prop="'content'+index">
           <div style="border: 1px solid #ccc" v-html="dataForm.listParts[index].expertPart.partContent"></div>
         </el-form-item>
-        <el-form-item label="解析" :prop="'resolve'+index">
+        <el-form-item label="解读" :prop="'resolve'+index">
           <div style="border: 1px solid #ccc"  v-html="dataForm.listParts[index].expertPart.resolve"></div>
         </el-form-item>
         <el-form-item label="音频">

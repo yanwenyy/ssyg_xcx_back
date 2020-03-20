@@ -172,27 +172,28 @@
         label="操作">
         <template slot-scope="scope">
           <el-popover
-            ref="popover2"
             placement="right"
             width="175"
             trigger="click">
+
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-original-text-add-or-update',query:{id:scope.row.id} })">原文</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-unscramble',query:{id:scope.row.id} })">解读</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-evaluation',query:{id:scope.row.id} })">测评</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-report-expert',query:{id:scope.row.id} })">报告</el-button>
+            <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:update')" type="text"  slot="reference" size="small">编辑</el-button>
           </el-popover>
           <el-popover
-            ref="popover3"
             placement="right"
             width="175"
             trigger="click">
-            <el-button type="text" size="small" @click="$router.push({ name: 'policy-original-view',query:{id:scope.row.id} })">原文</el-button>
+           <el-button type="text" size="small" @click="$router.push({ name: 'policy-original-view',query:{id:scope.row.id} })">原文</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-unscramble-view',query:{id:scope.row.id} })">解读</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-evaluation',query:{id:scope.row.id} })">测评</el-button>
             <el-button type="text" size="small" @click="$router.push({ name: 'policy-report-expert-view',query:{id:scope.row.id} })">报告</el-button>
+            <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:info')" slot="reference" type="text" size="small"  >查看</el-button>
           </el-popover>
-          <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:update')" type="text" v-popover:popover2 size="small">编辑</el-button>
-          <el-button v-show="scope.row.type==1" v-if="isAuth('biz:policy:info')" type="text" size="small" v-popover:popover3 >查看</el-button>
+
+
           <el-button v-show="scope.row.type==2" v-if="isAuth('biz:policy:update')" type="text" size="small" @click="$router.push({ name: 'policy-article-add-or-update',query:{id:scope.row.id} })">编辑</el-button>
           <el-button v-show="scope.row.type==2" v-if="isAuth('biz:policy:info')" type="text" size="small" @click="$router.push({ name: 'policy-article-view',query:{id:scope.row.id} })">查看</el-button>
         </template>
